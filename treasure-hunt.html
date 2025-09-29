@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Treasure Hunt Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 90vh; width: 100%; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    h1 { text-align: center; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🌟 Treasure Hunt Map 🌟</h1>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    var map = L.map('map').setView([55.687866247454544, 12.440356125771856], 13); // Example: Copenhagen
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Add some treasure hunt markers with clues
+    var clues = [
+      { coords: [55.68708054917811, 12.441355926742244], text: "Clue 1: Look near the big fountain!" },
+      { coords: [55.68696448408725, 12.437444152834074], text: "Clue 2: The treasure hides under the tall oak tree!" },
+      { coords: [55.68701542511072, 12.435067896667386], text: "Clue 3: Next spot is where kids love to play." },
+      { coords: [55.6888914067698, 12.43559286853583], text: "Clue 4: The treasure is buried where the sun shines bright." },
+      { coords: [55.690002484238356, 12.436452599450709], text: "Clue 5: The treasure is buried where the sun shines bright." }
+    ];
+
+    clues.forEach(function(clue) {
+      L.marker(clue.coords).addTo(map)
+        .bindPopup(clue.text);
+    });
+  </script>
+</body>
+</html>
