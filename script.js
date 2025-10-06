@@ -1,3 +1,8 @@
+// Ensure banner is hidden on page load
+document.addEventListener('DOMContentLoaded', function() {
+  hideCompletionBanner();
+});
+
 // Team setup and score logic
 var teamName = localStorage.getItem('teamName') || '';
 var solvedClues = JSON.parse(localStorage.getItem('solvedClues') || '[]');
@@ -47,6 +52,7 @@ if (teamName) {
 // Reset game logic
 document.getElementById('reset-btn').onclick = function() {
   if (confirm('Er I sikre på, I vil starte forfra? Alle jeres point og jeres holdnavn forsvinder.')) {
+    hideCompletionBanner();
     // Clear all saved data from localStorage
     localStorage.removeItem('teamName');
     localStorage.removeItem('solvedClues');
@@ -108,6 +114,13 @@ var clues = [
     text: "🤫 Femte spor: Et hemmeligt sted, hvor solen altid kan finde dig.",
     answer: "Solrig mark",
     type: "text"
+  },
+  {
+    coords: [55.6895, 12.4420],
+    text: "🌉 Sjette spor: Hvad finder du ved vandet, som lader dig krydse over?",
+    options: ["Båd", "Bro", "Sten"],
+    answer: "Bro",
+    type: "options"
   }
 ];
 
@@ -156,6 +169,12 @@ clues.forEach(function(clue, idx) {
 });
 
 // --- Game Completion Logic ---
+function hideCompletionBanner() {
+  var banner = document.getElementById('completion-banner');
+  banner.style.display = 'none';
+  banner.style.transform = 'translateY(-100%)';
+}
+
 function showCompletionBanner() {
   var banner = document.getElementById('completion-banner');
   banner.style.display = 'block';
