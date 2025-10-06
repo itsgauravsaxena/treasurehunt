@@ -156,13 +156,17 @@ clues.forEach(function(clue, idx) {
 });
 
 // --- Game Completion Logic ---
-function showCompletionModal() {
-  var modal = document.getElementById('completion-modal');
-  modal.style.display = 'flex';
-  document.getElementById('play-again-btn').onclick = function() {
-    // Use the existing reset logic
-    document.getElementById('reset-btn').click();
-  };
+function showCompletionBanner() {
+  var banner = document.getElementById('completion-banner');
+  banner.style.display = 'block';
+  banner.style.transform = 'translateY(0)';
+
+  // Start the confetti!
+  confetti({
+    particleCount: 150,
+    spread: 90,
+    origin: { y: 0.6 }
+  });
 }
 
 function handleCorrectAnswer(idx) {
@@ -175,7 +179,7 @@ function handleCorrectAnswer(idx) {
     // Check if all clues are solved
     if (solvedClues.length === clues.length) {
       // Use a timeout to let the user see the last checkmark
-      setTimeout(showCompletionModal, 500);
+      setTimeout(showCompletionBanner, 500);
     }
   }
 }
