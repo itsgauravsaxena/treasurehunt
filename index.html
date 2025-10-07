@@ -5,22 +5,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <div id="team-header" style="display:none;">
-      <span id="team-name-display" style="font-weight:bold;"></span>
-      <span id="team-score" style="margin-left:16px;font-weight:bold;">Point: 0</span>
-      <button id="reset-btn" style="margin-left:16px;padding:4px 12px;border-radius:6px;border:none;background:#fff;color:var(--primary);font-size:0.8em;cursor:pointer;">Start Forfra</button>
+    <div id="team-header" class="hidden">
+      <span id="team-name-display"></span>
+      <span id="team-score">Point: 0</span>
+      <button id="reset-btn" class="btn btn-secondary">Start Forfra</button>
     </div>
-    <div id="team-setup" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;">
-      <label for="team-name" style="font-size:1.1em;margin-bottom:6px;">Hvad hedder jeres seje hold?</label>
-      <input id="team-name" type="text" style="padding:6px 12px;border-radius:6px;border:1px solid #ccc;font-size:1em;" placeholder="Holdnavn" />
-      <button id="start-btn" style="margin-top:10px;padding:6px 18px;border-radius:6px;border:none;background:var(--primary);color:#fff;font-size:1em;cursor:pointer;">Start Skattejagten!</button>
+    <div id="team-setup">
+      <label for="team-name">Hvad hedder jeres seje hold?</label>
+      <input id="team-name" type="text" placeholder="Holdnavn" />
+      <br>
+      <br>
+      <button id="start-btn" class="btn">Start!</button>
     </div>
   </header>
-  <div id="map" style="display:none;"></div>
+  <div id="map" class="hidden"></div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>

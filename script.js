@@ -12,9 +12,9 @@ function updateScore() {
 }
 
 function showMap() {
-  document.getElementById('team-setup').style.display = 'none';
-  document.getElementById('map').style.display = 'block';
-  document.getElementById('team-header').style.display = 'block';
+  document.getElementById('team-setup').classList.add('hidden');
+  document.getElementById('map').classList.remove('hidden');
+  document.getElementById('team-header').classList.remove('hidden');
   document.getElementById('team-name-display').textContent = teamName ? 'Hold: ' + teamName : '';
   updateScore();
   // Invalidate map size to ensure it renders correctly after being un-hidden
@@ -124,41 +124,36 @@ var clues = [
   }
 ];
 
-// Define default and checkmark icons
-var defaultIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  shadowSize: [41, 41]
-});
-
-var checkIcon = L.icon({
-  iconUrl: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2705.png', // checkmark emoji
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -28]
-});
+// Function to create a numbered icon
+function createNumberedIcon(number, isSolved) {
+  var markerHtml = `<div class="numbered-marker ${isSolved ? 'solved' : ''}">${number}</div>`;
+  return L.divIcon({
+    html: markerHtml,
+    className: '', // Leaflet adds its own, we don't need an extra one
+    iconSize: [32, 32],
+    iconAnchor: [16, 16]
+  });
+}
 
 // Add markers with interactive popups
 var markers = [];
 clues.forEach(function(clue, idx) {
-  var icon = solvedClues.includes(idx) ? checkIcon : defaultIcon;
+  var isSolved = solvedClues.includes(idx);
+  var icon = createNumberedIcon(idx + 1, isSolved);
   var marker = L.marker(clue.coords, { icon: icon }).addTo(map);
   markers.push(marker);
 
   // Build the popup content once
   var popupContent = `<b>${clue.text}</b><br><div id='options-${idx}'>`;
   if (clue.type === "options") {
-    clue.options.forEach(function(opt) {
-      popupContent += `<button style='margin:4px 2px;padding:4px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;' onclick=\"window.selectAnswer(${idx}, '${opt}')\">${opt}</button>`;
+    clue.options.forEach(function(opt) { // Note: These buttons could also be styled with a shared class
+      popupContent += `<button class="popup-btn btn-secondary" style="margin:4px;" onclick="window.selectAnswer(${idx}, '${opt}')">${opt}</button>`;
     });
   } else if (clue.type === "text") {
-    popupContent += `<input type='text' id='input-${idx}' style='margin:4px 2px;padding:4px 10px;border-radius:6px;border:1px solid #ccc;width:120px;' placeholder='Skriv jeres svar...' />`;
-    popupContent += `<button style='margin:4px 2px;padding:4px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;' onclick=\"window.submitTextAnswer(${idx})\">Gæt</button>`;
+    popupContent += `<input type='text' id='input-${idx}' class="popup-input" style="margin:4px; width: 140px; padding: 8px; font-size: 0.7em;" placeholder='Skriv svar...' />`;
+    popupContent += `<button class="popup-submit-btn" style="margin:4px;" onclick="window.submitTextAnswer(${idx})">Gæt</button>`;
   }
-  popupContent += `</div><div id='feedback-${idx}' style='margin-top:8px;'></div>`;
+  popupContent += `</div><div id='feedback-${idx}' class='popup-feedback'></div>`;
   marker.bindPopup(popupContent);
 
   // Prevent popups from closing when interacting with content inside them
@@ -182,14 +177,17 @@ function showCompletionBanner() {
 
   // Start the confetti!
   confetti({
-    particleCount: 150,
-    spread: 90,
-    origin: { y: 0.6 }
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    shapes: ['square'],
+    colors: ['#AF7448', '#787878', '#55FF55', '#505050']
   });
 }
 
 function handleCorrectAnswer(idx) {
-  markers[idx].setIcon(checkIcon);
+  var solvedIcon = createNumberedIcon(idx + 1, true);
+  markers[idx].setIcon(solvedIcon);
   if (!solvedClues.includes(idx)) {
     solvedClues.push(idx);
     localStorage.setItem('solvedClues', JSON.stringify(solvedClues));
@@ -207,10 +205,12 @@ function handleCorrectAnswer(idx) {
 window.selectAnswer = function(idx, selected) {
   var feedbackDiv = map.getPane('popupPane').querySelector('#feedback-' + idx);
   if (selected === clues[idx].answer) {
-    feedbackDiv.innerHTML = `<span style='color:green;font-weight:bold;'>Helt rigtigt! Godt gået! 🎉</span>`;
+    feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
+    feedbackDiv.className = 'popup-feedback success';
     handleCorrectAnswer(idx);
   } else {
-    feedbackDiv.innerHTML = `<span style='color:red;font-weight:bold;'>Prøv igen! I kan godt! 💪</span>`;
+    feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
+    feedbackDiv.className = 'popup-feedback error';
   }
 };
 window.submitTextAnswer = function(idx) {
@@ -219,9 +219,11 @@ window.submitTextAnswer = function(idx) {
   if (!input) return;
   var val = input.value.trim();
   if (val.toLowerCase() === clues[idx].answer.toLowerCase()) {
-    feedbackDiv.innerHTML = `<span style='color:green;font-weight:bold;'>Helt rigtigt! Godt gået! 🎉</span>`;
+    feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
+    feedbackDiv.className = 'popup-feedback success';
     handleCorrectAnswer(idx);
   } else {
-    feedbackDiv.innerHTML = `<span style='color:red;font-weight:bold;'>Prøv igen! I kan godt! 💪</span>`;
+    feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
+    feedbackDiv.className = 'popup-feedback error';
   }
 };
