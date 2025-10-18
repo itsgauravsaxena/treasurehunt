@@ -17,7 +17,8 @@ body {
   font-family: 'Press Start 2P', cursive;
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  background: url('https://static.planetminecraft.com/files/image/minecraft/project/2020/758/13612594_l.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: var(--secondary);
   display: flex;
   flex-direction: column;
@@ -40,8 +41,15 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   font-size: 0.7em;
+}
+
+#team-name-display {
+  font-weight: bold;
+  flex-grow: 1; /* Allow team name to take up available space */
+  text-align: left;
+  margin-left: 10px;
 }
 
 #team-setup {
@@ -84,6 +92,7 @@ header {
   padding: 10px;
   overflow-y: auto;
   box-shadow: inset -4px 0px 0px #8f8f8f;
+  transition: width 0.3s ease, padding 0.3s ease, border 0.3s ease;
 }
 
 #leaderboard h3 {
@@ -115,6 +124,14 @@ header {
   flex: 1;
   width: 100%;
 }
+
+.main-container.leaderboard-collapsed #leaderboard {
+  width: 0;
+  padding: 10px 0;
+  border-right-width: 0;
+  overflow: hidden;
+}
+
 .leaflet-popup-content {
   font-size: 0.7rem;
   font-weight: normal;
@@ -137,6 +154,15 @@ header {
   text-shadow: var(--text-shadow);
 }
 
+.hint-text {
+  background-color: rgba(0,0,0,0.2);
+  padding: 8px;
+  margin-bottom: 8px;
+  font-style: italic;
+  opacity: 0.9;
+  border-radius: 4px;
+}
+
 .popup-feedback {
   margin-top: 8px;
   font-weight: normal;
@@ -153,12 +179,26 @@ header {
     font-size: 1.1em;
     padding: 10px;
   }
+  .main-container {
+    flex-direction: column;
+  }
   .leaflet-popup-content {
     font-size: 0.7rem; /* No change, just for context */
   }
   #leaderboard {
-    width: 150px;
+    width: 100%;
+    height: 150px; /* Set a height for the bottom panel */
+    border-right: none;
+    border-top: 4px solid var(--gray);
     font-size: 0.8em;
+    box-shadow: inset 0px 4px 0px #8f8f8f;
+    transition: height 0.3s ease, padding-top 0.3s ease, padding-bottom 0.3s ease, border 0.3s ease;
+  }
+  .main-container.leaderboard-collapsed #leaderboard {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
   }
 }
 
@@ -196,7 +236,19 @@ header {
   opacity: 0.7;
 }
 
-/* Button Styles */
+.btn, .popup-btn, .popup-submit-btn {
+  background: url('https://example.com/minecraft-button-texture.png') no-repeat center center;
+  background-size: cover;
+  border: 2px solid var(--gray);
+  color: var(--white);
+  text-shadow: var(--text-shadow);
+}
+
+.btn:hover, .popup-btn:hover, .popup-submit-btn:hover {
+  background: url('https://example.com/minecraft-button-hover-texture.png') no-repeat center center;
+  background-size: cover;
+}
+
 .btn, .popup-btn, .popup-submit-btn {
   padding: 10px 18px;
   border-radius: 0;
@@ -233,6 +285,16 @@ header {
   padding: 8px 12px;
   text-shadow: 2px 2px 0px #fff;
   box-shadow: inset -2px -3px 0px #8f8f8f;
+}
+
+#toggle-leaderboard-btn {
+  padding: 8px 10px;
+  font-size: 1em;
+}
+
+#reset-btn, #clear-leaderboard-btn {
+  padding: 8px 10px;
+  font-size: 1.2em; /* Make icons slightly larger */
 }
 
 .btn-secondary:hover {
@@ -347,6 +409,28 @@ body.dev-mode .hidden-clue-text {
   }
   100% {
     transform: translate(-50%, -150%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Add sparkle effect styles */
+.sparkle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #fff, rgba(255, 255, 255, 0));
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle-animation 1s ease-out forwards;
+}
+
+@keyframes sparkle-animation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
     opacity: 0;
   }
 }
