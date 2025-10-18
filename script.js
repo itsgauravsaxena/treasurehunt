@@ -4,11 +4,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Team setup and score logic
-var teamName = localStorage.getItem('teamName') || '';
-var solvedClues = JSON.parse(localStorage.getItem('solvedClues') || '[]');
+let teamName = localStorage.getItem('teamName') || '';
+// clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
+let clueProgress = JSON.parse(localStorage.getItem('clueProgress') || '{}');
 
 function updateScore() {
-  document.getElementById('team-score').textContent = 'Point: ' + solvedClues.length;
+  // Calculate total score by summing up the points from each clue
+  const totalScore = Object.values(clueProgress).reduce((sum, clue) => sum + (clue.score || 0), 0);
+  document.getElementById('team-score').textContent = 'Point: ' + totalScore;
 }
 
 function showMap() {
@@ -55,11 +58,11 @@ document.getElementById('reset-btn').onclick = function() {
     hideCompletionBanner();
     // Clear all saved data from localStorage
     localStorage.removeItem('teamName');
-    localStorage.removeItem('solvedClues');
+    localStorage.removeItem('clueProgress');
 
     // Reset in-memory variables
     teamName = '';
-    solvedClues = [];
+    clueProgress = {};
 
     // Reload the page to go back to the setup screen
     window.location.reload();
@@ -138,13 +141,14 @@ function createNumberedIcon(number, isSolved) {
 // Add markers with interactive popups
 var markers = [];
 clues.forEach(function(clue, idx) {
-  var isSolved = solvedClues.includes(idx);
+  var isSolved = clueProgress[idx] && clueProgress[idx].solved;
   var icon = createNumberedIcon(idx + 1, isSolved);
   var marker = L.marker(clue.coords, { icon: icon }).addTo(map);
   markers.push(marker);
 
   // Build the popup content once
-  var popupContent = `<b>${clue.text}</b><br><div id='options-${idx}'>`;
+  // Show a simple title, and wrap the original clue text in a hidden span
+  var popupContent = `<b>Spor ${idx + 1}</b><span class="hidden-clue-text">${clue.text}</span><br><div id='options-${idx}'>`;
   if (clue.type === "options") {
     clue.options.forEach(function(opt) { // Note: These buttons could also be styled with a shared class
       popupContent += `<button class="popup-btn btn-secondary" style="margin:4px;" onclick="window.selectAnswer(${idx}, '${opt}')">${opt}</button>`;
@@ -185,30 +189,77 @@ function showCompletionBanner() {
   });
 }
 
+/**
+ * Displays a flying text animation for points won.
+ * @param {number} points The number of points to display.
+ */
+function showFlyingPoints(points) {
+  const pointsLabel = points === 1 ? 'Point' : 'Point'; // Danish: "Point" is both singular and plural
+  const pointsText = `+${points} ${pointsLabel}!`;
+
+  const flyingTextElement = document.createElement('div');
+  flyingTextElement.className = 'point-fly-up';
+  flyingTextElement.textContent = pointsText;
+
+  document.body.appendChild(flyingTextElement);
+
+  // Remove the element after the animation completes (1.5s)
+  setTimeout(() => flyingTextElement.remove(), 1500);
+}
+
 function handleCorrectAnswer(idx) {
+  // Initialize progress if it doesn't exist
+  if (!clueProgress[idx]) {
+    clueProgress[idx] = { attempts: 0, solved: false, score: 0 };
+  }
+
+  // Only proceed if the clue hasn't been solved yet
+  if (clueProgress[idx].solved) {
+    return;
+  }
+
+  clueProgress[idx].attempts += 1;
+  clueProgress[idx].solved = true;
+
+  let pointsWon = 0;
+  // Calculate points based on attempts
+  if (clueProgress[idx].attempts === 1) {
+    pointsWon = 3;
+  } else if (clueProgress[idx].attempts === 2) {
+    pointsWon = 2;
+  } else {
+    pointsWon = 1;
+  }
+  clueProgress[idx].score = pointsWon;
+
+  // Show the flying points animation
+  showFlyingPoints(pointsWon);
+  // Update UI
   var solvedIcon = createNumberedIcon(idx + 1, true);
   markers[idx].setIcon(solvedIcon);
-  if (!solvedClues.includes(idx)) {
-    solvedClues.push(idx);
-    localStorage.setItem('solvedClues', JSON.stringify(solvedClues));
-    updateScore();
+  updateScore();
+  localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
 
-    // Check if all clues are solved
-    if (solvedClues.length === clues.length) {
-      // Use a timeout to let the user see the last checkmark
-      setTimeout(showCompletionBanner, 500);
-    }
+  // Check if all clues are solved
+  const solvedCount = Object.values(clueProgress).filter(p => p.solved).length;
+  if (solvedCount === clues.length) {
+    setTimeout(showCompletionBanner, 500);
   }
 }
 
 // --- Answer Handlers ---
 window.selectAnswer = function(idx, selected) {
   var feedbackDiv = map.getPane('popupPane').querySelector('#feedback-' + idx);
+  if (clueProgress[idx] && clueProgress[idx].solved) return; // Already solved
+
   if (selected === clues[idx].answer) {
     feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
     feedbackDiv.className = 'popup-feedback success';
     handleCorrectAnswer(idx);
   } else {
+    if (!clueProgress[idx]) clueProgress[idx] = { attempts: 0 };
+    clueProgress[idx].attempts += 1;
+    localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
     feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
     feedbackDiv.className = 'popup-feedback error';
   }
@@ -216,13 +267,17 @@ window.selectAnswer = function(idx, selected) {
 window.submitTextAnswer = function(idx) {
   var input = map.getPane('popupPane').querySelector('#input-' + idx);
   var feedbackDiv = map.getPane('popupPane').querySelector('#feedback-' + idx);
-  if (!input) return;
+  if (!input || (clueProgress[idx] && clueProgress[idx].solved)) return; // No input or already solved
+
   var val = input.value.trim();
   if (val.toLowerCase() === clues[idx].answer.toLowerCase()) {
     feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
     feedbackDiv.className = 'popup-feedback success';
     handleCorrectAnswer(idx);
   } else {
+    if (!clueProgress[idx]) clueProgress[idx] = { attempts: 0 };
+    clueProgress[idx].attempts += 1;
+    localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
     feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
     feedbackDiv.className = 'popup-feedback error';
   }
