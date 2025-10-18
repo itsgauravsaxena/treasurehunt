@@ -19,8 +19,8 @@ jobs:
 
       - name: Prepare publish directory
         run: |
-          mkdir dist
-          cp index.html style.css app.js data.js ui.js firebase-config.js dist/
+          mkdir -p dist
+          cp *.html *.css *.js dist/
         shell: bash
 
       - name: Deploy to GitHub Pages
