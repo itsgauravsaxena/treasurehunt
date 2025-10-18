@@ -101,6 +101,28 @@ function handleCorrectAnswer(idx) {
 
 // --- Event Listeners and Global Handlers ---
 
+function setupDevMode() {
+  const devToggle = document.getElementById('dev-toggle');
+  const isDevMode = localStorage.getItem('devMode') === 'true';
+
+  // Apply state on load
+  if (isDevMode) {
+    devToggle.checked = true;
+    document.body.classList.add('dev-mode');
+  }
+
+  // Listen for changes
+  devToggle.addEventListener('change', () => {
+    if (devToggle.checked) {
+      document.body.classList.add('dev-mode');
+      localStorage.setItem('devMode', 'true');
+    } else {
+      document.body.classList.remove('dev-mode');
+      localStorage.setItem('devMode', 'false');
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   ui.hideCompletionBanner();
   initializeMarkers();
@@ -110,6 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
     startGame();
     ui.setTeamNameInput(teamName);
   }
+
+  setupDevMode();
 });
 
 document.getElementById('start-btn').onclick = () => {

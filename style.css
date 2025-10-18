@@ -36,6 +36,14 @@ header {
   z-index: 1001; /* Above map and completion banner */
 }
 
+#team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.7em;
+}
+
 #team-setup {
   display: flex;
   flex-direction: column;
@@ -136,7 +144,12 @@ header {
 
 /* Class to visually hide the detailed clue text in popups */
 .hidden-clue-text {
-  display: none;
+  display: block; /* Hidden by default due to small height and overflow */
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  margin-top: 8px;
+  opacity: 0.7;
 }
 
 /* Button Styles */
@@ -206,6 +219,60 @@ header {
   /* content: '✓'; */
 }
 
+/* Dev Mode Toggle Switch */
+.dev-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto; /* Center it in the available space */
+}
+.dev-toggle-label {
+  font-size: 1em;
+  text-shadow: var(--text-shadow);
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--primary-dark);
+  border: 2px solid var(--gray);
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--light-gray);
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: var(--success);
+}
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* When dev mode is on, show the clue text */
+body.dev-mode .hidden-clue-text {
+  max-height: 100px; /* Animate it open */
+}
 /* Flying Points Animation */
 .point-fly-up {
   position: fixed;
