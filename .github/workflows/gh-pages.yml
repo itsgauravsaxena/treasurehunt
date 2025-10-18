@@ -14,9 +14,10 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Create Firebase config file
-        run: echo "${{ secrets.FIREBASE_CONFIG_JS }}" > firebase-config.js
-        shell: bash
+      - name: Create Firebase Config from Secret
+        run: echo "$FIREBASE_CONFIG_JS" > firebase-config.js
+        env:
+          FIREBASE_CONFIG_JS: ${{ secrets.FIREBASE_CONFIG_JS }}
 
       - name: Prepare publish directory
         run: |
