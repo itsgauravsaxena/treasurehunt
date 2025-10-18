@@ -12,15 +12,16 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Create Firebase config file
-        run: |
-          echo "${{ secrets.FIREBASE_CONFIG_JS }}" > firebase-config.js
-        shell: bash
-
       - name: Prepare publish directory
         run: |
+          # Create the distribution directory
           mkdir -p dist
-          cp *.html *.css *.js dist/
+
+          # Copy all static assets
+          cp index.html style.css app.js data.js ui.js dist/
+
+          # Create the secret config file directly in the destination
+          echo "${{ secrets.FIREBASE_CONFIG_JS }}" > dist/firebase-config.js
         shell: bash
 
       - name: Deploy to GitHub Pages
