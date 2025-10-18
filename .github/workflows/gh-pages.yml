@@ -39,7 +39,7 @@ jobs:
         run: mv firebase-config.js ./dist/
 
       - name: Rename Firebase Config to .mjs
-        run: mv firebase-config.mjs firebase-config.mjs
+        run: mv firebase-config.js firebase-config.mjs
 
       - name: Verify Renamed Firebase Config
         run: |
