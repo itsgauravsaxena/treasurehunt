@@ -1,18 +1,6 @@
 import { clues } from './data.js';
 import * as ui from './ui.js';
 
-// --- Firebase Setup ---
-// IMPORTANT: Paste your Firebase config object here!
-const firebaseConfig = {
-  apiKey: "AIzaSyB8I0q9UI7h7dZBJKVe0whaprDHQSWOgb8",
-  authDomain: "treasure-hunt-live.firebaseapp.com",
-  databaseURL: "https://treasure-hunt-live-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "treasure-hunt-live",
-  storageBucket: "treasure-hunt-live.firebasestorage.app",
-  messagingSenderId: "711911844935",
-  appId: "1:711911844935:web:d9363dc96de977745bd562"
-};
-
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
@@ -160,8 +148,7 @@ function listenForTeamUpdates() {
       const li = document.createElement('li');
       li.textContent = `${team.name}: ${team.score}`;
       if (team.id === teamId) {
-        li.style.fontWeight = 'bold';
-        li.style.color = '#000';
+        li.classList.add('current-team');
       }
       leaderboardList.appendChild(li);
     });
@@ -210,6 +197,16 @@ document.getElementById('team-name').addEventListener('keyup', (event) => {
     document.getElementById('start-btn').click();
   }
 });
+
+// Clear leaderboard logic (dev mode only)
+document.getElementById('clear-leaderboard-btn').onclick = () => {
+  if (confirm('ADVARSEL: Dette vil slette ALLE hold og point fra leaderboardet. Er du helt sikker?')) {
+    // This removes the entire 'teams' node from Firebase
+    teamsRef.remove()
+      .then(() => console.log("Leaderboard cleared successfully."))
+      .catch(error => console.error("Error clearing leaderboard: ", error));
+  }
+};
 
 // Reset game logic
 document.getElementById('reset-btn').onclick = () => {

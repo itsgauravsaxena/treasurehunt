@@ -102,6 +102,15 @@ header {
   line-height: 1.8;
 }
 
+#leaderboard-list li.current-team {
+  background-color: var(--success);
+  color: var(--gray);
+  padding: 4px 8px;
+  margin: 2px -8px; /* Use margin to create space and offset padding */
+  border: 2px solid var(--gray);
+  font-weight: bold;
+}
+
 #map {
   flex: 1;
   width: 100%;
@@ -308,6 +317,15 @@ input:checked + .slider:before {
 body.dev-mode .hidden-clue-text {
   max-height: 100px; /* Animate it open */
 }
+
+.dev-only {
+  display: none;
+}
+
+.dev-mode .dev-only {
+  display: inline-block;
+}
+
 /* Flying Points Animation */
 .point-fly-up {
   position: fixed;

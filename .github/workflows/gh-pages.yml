@@ -12,9 +12,10 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # If you have build steps (npm run build, etc.), add them here.
-      # - name: Build
-      #   run: echo "Add build steps here if needed"
+      - name: Create Firebase config file
+        run: |
+          echo "${{ secrets.FIREBASE_CONFIG_JS }}" > firebase-config.js
+        shell: bash
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
