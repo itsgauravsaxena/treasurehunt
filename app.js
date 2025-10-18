@@ -1,15 +1,37 @@
 import { clues } from './data.js';
 import * as ui from './ui.js';
 
+// --- Firebase Setup ---
+// IMPORTANT: Paste your Firebase config object here!
+const firebaseConfig = {
+  apiKey: "AIzaSyB8I0q9UI7h7dZBJKVe0whaprDHQSWOgb8",
+  authDomain: "treasure-hunt-live.firebaseapp.com",
+  databaseURL: "https://treasure-hunt-live-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "treasure-hunt-live",
+  storageBucket: "treasure-hunt-live.firebasestorage.app",
+  messagingSenderId: "711911844935",
+  appId: "1:711911844935:web:d9363dc96de977745bd562"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const teamsRef = database.ref('teams');
+
 // Team setup and score logic
-let teamName = localStorage.getItem('teamName') || '';
+let teamId = sessionStorage.getItem('teamId') || null;
+let teamName = sessionStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
-let clueProgress = JSON.parse(localStorage.getItem('clueProgress') || '{}');
+let clueProgress = JSON.parse(sessionStorage.getItem('clueProgress') || '{}');
 let markers = [];
 
 function calculateTotalScore() {
   // Calculate total score by summing up the points from each clue
-  return Object.values(clueProgress).reduce((sum, clue) => sum + (clue.score || 0), 0);
+  const score = Object.values(clueProgress).reduce((sum, clue) => sum + (clue.score || 0), 0);
+  if (teamId) {
+    teamsRef.child(teamId).update({ score: score });
+  }
+  return score;
 }
 
 // Initialize map with smooth zoom and optimized rendering
@@ -27,6 +49,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 function startGame() {
+  document.getElementById('leaderboard').classList.remove('hidden');
   ui.showMap(map, teamName, calculateTotalScore());
 }
 
@@ -90,10 +113,10 @@ function handleCorrectAnswer(idx) {
   const solvedIcon = ui.createNumberedIcon(idx + 1, true);
   markers[idx].setIcon(solvedIcon);
   ui.updateScoreDisplay(calculateTotalScore());
-  localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
+  sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
 
   // Check if all clues are solved
-  const solvedCount = Object.values(clueProgress).filter(p => p.solved).length;
+  const solvedCount = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
   if (solvedCount === clues.length) {
     setTimeout(ui.showCompletionBanner, 500);
   }
@@ -102,7 +125,7 @@ function handleCorrectAnswer(idx) {
 // --- Event Listeners and Global Handlers ---
 
 function setupDevMode() {
-  const devToggle = document.getElementById('dev-toggle');
+  const devToggle = document.getElementById('dev-toggle'); // Listen for changes
   const isDevMode = localStorage.getItem('devMode') === 'true';
 
   // Apply state on load
@@ -123,12 +146,34 @@ function setupDevMode() {
   });
 }
 
+function listenForTeamUpdates() {
+  teamsRef.orderByChild('score').on('value', (snapshot) => {
+    const leaderboardList = document.getElementById('leaderboard-list');
+    leaderboardList.innerHTML = ''; // Clear current list
+    const teams = [];
+    snapshot.forEach((childSnapshot) => {
+      teams.push({ id: childSnapshot.key, ...childSnapshot.val() });
+    });
+
+    // Sort descending by score and render
+    teams.reverse().forEach(team => {
+      const li = document.createElement('li');
+      li.textContent = `${team.name}: ${team.score}`;
+      if (team.id === teamId) {
+        li.style.fontWeight = 'bold';
+        li.style.color = '#000';
+      }
+      leaderboardList.appendChild(li);
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   ui.hideCompletionBanner();
   initializeMarkers();
-
+  listenForTeamUpdates();
   // If team name already set, skip setup
-  if (teamName) {
+  if (teamId && teamName) {
     startGame();
     ui.setTeamNameInput(teamName);
   }
@@ -144,8 +189,17 @@ document.getElementById('start-btn').onclick = () => {
     input.focus();
     return;
   }
+
+  // Create a new team in Firebase
+  const newTeamRef = teamsRef.push();
+  teamId = newTeamRef.key;
   teamName = name;
-  localStorage.setItem('teamName', teamName);
+  newTeamRef.set({
+    name: teamName,
+    score: 0
+  });
+  sessionStorage.setItem('teamId', teamId);
+  sessionStorage.setItem('teamName', teamName);
   startGame();
 };
 
@@ -160,9 +214,13 @@ document.getElementById('team-name').addEventListener('keyup', (event) => {
 // Reset game logic
 document.getElementById('reset-btn').onclick = () => {
   if (confirm('Er I sikre på, I vil starte forfra? Alle jeres point og jeres holdnavn forsvinder.')) {
+    if (teamId) {
+      teamsRef.child(teamId).remove();
+    }
     ui.hideCompletionBanner();
-    localStorage.removeItem('teamName');
-    localStorage.removeItem('clueProgress');
+    sessionStorage.removeItem('teamId');
+    sessionStorage.removeItem('teamName');
+    sessionStorage.removeItem('clueProgress');
     window.location.reload();
   }
 };
@@ -180,7 +238,7 @@ window.selectAnswer = (idx, selected) => {
   } else {
     if (!clueProgress[idx]) clueProgress[idx] = { attempts: 0 };
     clueProgress[idx].attempts += 1;
-    localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
+    sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
     feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
     feedbackDiv.className = 'popup-feedback error';
   }
@@ -199,7 +257,7 @@ window.submitTextAnswer = (idx) => {
   } else {
     if (!clueProgress[idx]) clueProgress[idx] = { attempts: 0 };
     clueProgress[idx].attempts += 1;
-    localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
+    sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
     feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
     feedbackDiv.className = 'popup-feedback error';
   }
