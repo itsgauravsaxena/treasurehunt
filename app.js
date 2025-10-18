@@ -1,5 +1,6 @@
 import { clues } from './data.js';
 import * as ui from './ui.js';
+import { firebaseConfig } from './firebase-config.js';
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

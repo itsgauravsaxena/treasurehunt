@@ -17,8 +17,14 @@ jobs:
           echo "${{ secrets.FIREBASE_CONFIG_JS }}" > firebase-config.js
         shell: bash
 
+      - name: Prepare publish directory
+        run: |
+          mkdir dist
+          cp index.html style.css app.js data.js ui.js firebase-config.js dist/
+        shell: bash
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./dist
