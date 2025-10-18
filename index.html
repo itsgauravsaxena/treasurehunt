@@ -24,6 +24,7 @@ window.firebaseConfig = {
 <body>
   <header>
     <div id="team-header" class="hidden">
+      <button id="toggle-leaderboard-btn" class="btn btn-secondary" title="Vis/skjul leaderboard">🏆</button>
       <span id="team-name-display"></span>
       <span id="team-score">Point: 0</span>
       <div class="dev-toggle-container">
@@ -33,8 +34,8 @@ window.firebaseConfig = {
           <span class="slider"></span>
         </label>
       </div>
-      <button id="reset-btn" class="btn btn-secondary">Start Forfra</button>
-      <button id="clear-leaderboard-btn" class="btn btn-secondary dev-only">Ryd Leaderboard</button>
+      <button id="reset-btn" class="btn btn-secondary" title="Start Forfra">🔄</button>
+      <button id="clear-leaderboard-btn" class="btn btn-secondary dev-only" title="Ryd Leaderboard">🗑️</button>
     </div>
     <div id="team-setup">
       <label for="team-name">Hvad hedder jeres seje hold?</label>
