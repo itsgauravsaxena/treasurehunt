@@ -51,6 +51,10 @@ jobs:
           echo "Listing files in deployment directory to verify firebase-config.js exists:"
           ls -la ./dist/
 
+      - name: Inject Firebase Config into index.html
+        run: |
+          sed -i '/<\/head>/i <script>\nwindow.firebaseConfig = {\n  apiKey: "${{ secrets.FIREBASE_API_KEY }}",\n  authDomain: "${{ secrets.FIREBASE_AUTH_DOMAIN }}",\n  databaseURL: "${{ secrets.FIREBASE_DATABASE_URL }}",\n  projectId: "${{ secrets.FIREBASE_PROJECT_ID }}",\n  storageBucket: "${{ secrets.FIREBASE_STORAGE_BUCKET }}",\n  messagingSenderId: "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}",\n  appId: "${{ secrets.FIREBASE_APP_ID }}"\n};\n</script>' ./dist/index.html
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
