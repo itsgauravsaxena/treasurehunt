@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <title>Skattejagt Kort</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div id="team-header" class="hidden">
+      <span id="team-name-display"></span>
+      <span id="team-score">Point: 0</span>
+      <div class="dev-toggle-container">
+        <label for="dev-toggle" class="dev-toggle-label">Dev</label>
+        <label class="switch">
+          <input type="checkbox" id="dev-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <button id="reset-btn" class="btn btn-secondary">Start Forfra</button>
+      <button id="clear-leaderboard-btn" class="btn btn-secondary dev-only">Ryd Leaderboard</button>
+    </div>
+    <div id="team-setup">
+      <label for="team-name">Hvad hedder jeres seje hold?</label>
+      <input id="team-name" type="text" placeholder="Holdnavn" />
+      <br>
+      <br>
+      <button id="start-btn" class="btn">Start!</button>
+    </div>
+  </header>
+  <div class="main-container">
+    <div id="leaderboard" class="hidden">
+      <h3>Leaderboard</h3>
+      <ul id="leaderboard-list"></ul>
+    </div>
+    <div id="map" class="hidden"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script type="module" src="app.js"></script>
+  <div id="completion-banner" class="completion-banner">
+    🏆 Tillykke! I har fundet alle sporene! 🏆
+  </div>
+</body>
+</html>
