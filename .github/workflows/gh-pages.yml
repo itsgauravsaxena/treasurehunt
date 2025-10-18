@@ -38,12 +38,12 @@ jobs:
       - name: Move Firebase Config to Deployment Directory
         run: mv firebase-config.js ./dist/
 
-      - name: Rename Firebase Config to .mjs
-        run: mv ./dist/firebase-config.js ./dist/firebase-config.mjs
+      - name: Rename Firebase Config to .json
+        run: mv ./dist/firebase-config.js ./dist/firebase-config.json
 
       - name: Verify Renamed Firebase Config
         run: |
-          echo "Listing files to verify firebase-config.mjs exists in dist directory:"
+          echo "Listing files to verify firebase-config.json exists in dist directory:"
           ls -la ./dist/
 
       - name: Verify Deployment Files
