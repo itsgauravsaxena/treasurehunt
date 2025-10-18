@@ -6,12 +6,16 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const teamsRef = database.ref('teams');
 
+// --- App State ---
+const APP_VERSION = '1.1'; // Increment this when clue data structure changes
+
 // Team setup and score logic
 let teamId = sessionStorage.getItem('teamId') || null;
 let teamName = sessionStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
 let clueProgress = JSON.parse(sessionStorage.getItem('clueProgress') || '{}');
 let markers = [];
+let teamClues = JSON.parse(sessionStorage.getItem('teamClues')) || clues;
 
 function calculateTotalScore() {
   // Calculate total score by summing up the points from each clue
@@ -36,20 +40,24 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-function startGame() {
+function startGame(isNewGame) {
   document.getElementById('leaderboard').classList.remove('hidden');
   ui.showMap(map, teamName, calculateTotalScore());
+  initializeMarkers(); // Create markers only when the game starts
+  if (isNewGame) teamsRef.child(teamId).set({ name: teamName, score: 0 });
 }
 
 function initializeMarkers() {
-  clues.forEach((clue, idx) => {
+  if (markers.length > 0) return; // Don't re-initialize if markers already exist
+  teamClues.forEach((clue, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
     const icon = ui.createNumberedIcon(idx + 1, isSolved);
     const marker = L.marker(clue.coords, { icon }).addTo(map);
     markers.push(marker);
 
     // Build the popup content
-    let popupContent = `<b>Spor ${idx + 1}</b><span class="hidden-clue-text">${clue.text}</span><br><div id='options-${idx}'>`;
+    let popupContent = `<b>Spor ${idx + 1}</b><span class="hidden-clue-text">${clue.text}</span><br>`;
+    popupContent += `<div class="hint-text">💡 ${clue.hint}</div><div id='options-${idx}'>`;
     if (clue.type === "options") {
       clue.options.forEach(opt => {
         popupContent += `<button class="popup-btn btn-secondary" style="margin:4px;" onclick="window.selectAnswer(${idx}, '${opt}')">${opt}</button>`;
@@ -105,8 +113,19 @@ function handleCorrectAnswer(idx) {
 
   // Check if all clues are solved
   const solvedCount = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
-  if (solvedCount === clues.length) {
+  if (solvedCount === teamClues.length) {
     setTimeout(ui.showCompletionBanner, 500);
+  }
+}
+
+/**
+ * Shuffles an array in place using the Fisher-Yates algorithm.
+ * @param {Array} array The array to shuffle.
+ */
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
@@ -156,17 +175,38 @@ function listenForTeamUpdates() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Version check to clear old session data
+  const storedVersion = sessionStorage.getItem('appVersion');
+  if (storedVersion !== APP_VERSION) {
+    console.log('App version changed. Clearing old session data.');
+    sessionStorage.removeItem('teamId');
+    sessionStorage.removeItem('teamName');
+    sessionStorage.removeItem('clueProgress');
+    sessionStorage.removeItem('teamClues');
+    sessionStorage.setItem('appVersion', APP_VERSION);
+    window.location.reload(); // Reload to start fresh
+  }
+
   ui.hideCompletionBanner();
-  initializeMarkers();
   listenForTeamUpdates();
   // If team name already set, skip setup
   if (teamId && teamName) {
-    startGame();
-    ui.setTeamNameInput(teamName);
+    startGame(false); // It's not a new game, just restoring state
+    ui.setTeamNameInput(teamName); // Pre-fill the input for clarity
   }
 
   setupDevMode();
 });
+
+document.getElementById('toggle-leaderboard-btn').onclick = () => {
+  const mainContainer = document.querySelector('.main-container');
+  mainContainer.classList.toggle('leaderboard-collapsed');
+
+  // After the transition, tell the map to recalculate its size
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 300); // 300ms matches the CSS transition duration
+};
 
 document.getElementById('start-btn').onclick = () => {
   const input = document.getElementById('team-name');
@@ -181,13 +221,17 @@ document.getElementById('start-btn').onclick = () => {
   const newTeamRef = teamsRef.push();
   teamId = newTeamRef.key;
   teamName = name;
-  newTeamRef.set({
-    name: teamName,
-    score: 0
-  });
+
+  // Create a unique, shuffled clue order for this new team
+  const newTeamClues = [...clues]; // Create a copy of the master clues
+  shuffleArray(newTeamClues);
+  teamClues = newTeamClues; // Update the in-memory clues for this session
+  sessionStorage.setItem('teamClues', JSON.stringify(teamClues));
+  sessionStorage.setItem('appVersion', APP_VERSION); // Set version on new game
+
   sessionStorage.setItem('teamId', teamId);
   sessionStorage.setItem('teamName', teamName);
-  startGame();
+  startGame(true); // This is a new game
 };
 
 // Allow pressing Enter to start
@@ -218,6 +262,7 @@ document.getElementById('reset-btn').onclick = () => {
     sessionStorage.removeItem('teamId');
     sessionStorage.removeItem('teamName');
     sessionStorage.removeItem('clueProgress');
+    sessionStorage.removeItem('teamClues');
     window.location.reload();
   }
 };
@@ -228,7 +273,7 @@ window.selectAnswer = (idx, selected) => {
   const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
   if (clueProgress[idx] && clueProgress[idx].solved) return; // Already solved
 
-  if (selected === clues[idx].answer) {
+  if (selected === teamClues[idx].answer) {
     feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
     feedbackDiv.className = 'popup-feedback success';
     handleCorrectAnswer(idx);
@@ -247,7 +292,7 @@ window.submitTextAnswer = (idx) => {
   if (!input || (clueProgress[idx] && clueProgress[idx].solved)) return; // No input or already solved
 
   const val = input.value.trim();
-  if (val.toLowerCase() === clues[idx].answer.toLowerCase()) {
+  if (val.toLowerCase() === teamClues[idx].answer.toLowerCase()) {
     feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
     feedbackDiv.className = 'popup-feedback success';
     handleCorrectAnswer(idx);
