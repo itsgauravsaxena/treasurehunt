@@ -1,6 +1,6 @@
 import { clues } from './data.js';
 import * as ui from './ui.js';
-import { firebaseConfig } from './firebase-config.mjs';
+import { firebaseConfig } from './firebase-config.json';
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
