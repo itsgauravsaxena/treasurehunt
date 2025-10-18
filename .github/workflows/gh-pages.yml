@@ -35,6 +35,14 @@ jobs:
           cp *.html *.css *.js dist/
         shell: bash
 
+      - name: Move Firebase Config to Deployment Directory
+        run: mv firebase-config.js ./dist/
+
+      - name: Verify Deployment Files
+        run: |
+          echo "Listing files in deployment directory to verify firebase-config.js exists:"
+          ls -la ./dist/
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
