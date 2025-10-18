@@ -71,6 +71,46 @@ header {
   box-shadow: inset 2px 2px 0px #3a3a3a;
 }
 
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+#leaderboard {
+  width: 250px;
+  background: var(--light-gray);
+  border-right: 4px solid var(--gray);
+  padding: 10px;
+  overflow-y: auto;
+  box-shadow: inset -4px 0px 0px #8f8f8f;
+}
+
+#leaderboard h3 {
+  font-size: 0.9em;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 0px #fff;
+}
+
+#leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.7em;
+  line-height: 1.8;
+}
+
+#leaderboard-list li.current-team {
+  background-color: var(--success);
+  color: var(--gray);
+  padding: 4px 8px;
+  margin: 2px -8px; /* Use margin to create space and offset padding */
+  border: 2px solid var(--gray);
+  font-weight: bold;
+}
+
 #map {
   flex: 1;
   width: 100%;
@@ -115,6 +155,10 @@ header {
   }
   .leaflet-popup-content {
     font-size: 0.7rem; /* No change, just for context */
+  }
+  #leaderboard {
+    width: 150px;
+    font-size: 0.8em;
   }
 }
 
@@ -273,6 +317,15 @@ input:checked + .slider:before {
 body.dev-mode .hidden-clue-text {
   max-height: 100px; /* Animate it open */
 }
+
+.dev-only {
+  display: none;
+}
+
+.dev-mode .dev-only {
+  display: inline-block;
+}
+
 /* Flying Points Animation */
 .point-fly-up {
   position: fixed;
