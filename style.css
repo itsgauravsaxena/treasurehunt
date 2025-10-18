@@ -134,6 +134,11 @@ header {
   display: none !important;
 }
 
+/* Class to visually hide the detailed clue text in popups */
+.hidden-clue-text {
+  display: none;
+}
+
 /* Button Styles */
 .btn, .popup-btn, .popup-submit-btn {
   padding: 10px 18px;
@@ -199,4 +204,29 @@ header {
   background-color: #198754; /* Bootstrap Green */
   /* You could also add a checkmark */
   /* content: '✓'; */
+}
+
+/* Flying Points Animation */
+.point-fly-up {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3em;
+  color: var(--success);
+  text-shadow: 3px 3px 0px var(--gray);
+  pointer-events: none; /* Prevents interfering with map clicks */
+  z-index: 2000; /* Ensure it's on top of everything */
+  animation: fly-up-animation 1.5s ease-out forwards;
+}
+
+@keyframes fly-up-animation {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -150%) scale(1.2);
+    opacity: 0;
+  }
 }
