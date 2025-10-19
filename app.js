@@ -119,6 +119,35 @@ function handleCorrectAnswer(idx) {
 }
 
 /**
+ * Centralized function to check a user's answer for a given clue.
+ * @param {number} idx - The index of the clue.
+ * @param {string} userAnswer - The user's submitted answer.
+ */
+function checkAnswer(idx, userAnswer) {
+  const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
+  if (!feedbackDiv) return;
+
+  const correctAnswer = teamClues[idx].answer;
+  const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+
+  if (isCorrect) {
+    feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
+    feedbackDiv.className = 'popup-feedback success';
+    handleCorrectAnswer(idx);
+  } else {
+    // Handle incorrect answer
+    if (!clueProgress[idx]) {
+      clueProgress[idx] = { attempts: 0 };
+    }
+    clueProgress[idx].attempts += 1;
+    sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
+
+    feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
+    feedbackDiv.className = 'popup-feedback error';
+  }
+}
+
+/**
  * Shuffles an array in place using the Fisher-Yates algorithm.
  * @param {Array} array The array to shuffle.
  */
@@ -270,37 +299,16 @@ document.getElementById('reset-btn').onclick = () => {
 // --- Answer Handlers (exposed to global scope for inline HTML onclick) ---
 
 window.selectAnswer = (idx, selected) => {
-  const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
   if (clueProgress[idx] && clueProgress[idx].solved) return; // Already solved
-
-  if (selected === teamClues[idx].answer) {
-    feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
-    feedbackDiv.className = 'popup-feedback success';
-    handleCorrectAnswer(idx);
-  } else {
-    if (!clueProgress[idx]) clueProgress[idx] = { attempts: 0 };
-    clueProgress[idx].attempts += 1;
-    sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
-    feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
-    feedbackDiv.className = 'popup-feedback error';
-  }
+  checkAnswer(idx, selected);
 };
 
 window.submitTextAnswer = (idx) => {
   const input = map.getPane('popupPane').querySelector(`#input-${idx}`);
-  const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
   if (!input || (clueProgress[idx] && clueProgress[idx].solved)) return; // No input or already solved
 
   const val = input.value.trim();
-  if (val.toLowerCase() === teamClues[idx].answer.toLowerCase()) {
-    feedbackDiv.innerHTML = `Helt rigtigt! Godt gået! 🎉`;
-    feedbackDiv.className = 'popup-feedback success';
-    handleCorrectAnswer(idx);
-  } else {
-    if (!clueProgress[idx]) clueProgress[idx] = { attempts: 0 };
-    clueProgress[idx].attempts += 1;
-    sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
-    feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
-    feedbackDiv.className = 'popup-feedback error';
+  if (val) {
+    checkAnswer(idx, val);
   }
 };
