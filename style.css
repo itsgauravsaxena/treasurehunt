@@ -8,7 +8,7 @@
   --gray: #373737;
   --light-gray: #C6C6C6;
   --success: #55FF55; /* Minecraft green */
-  --danger: #FF5555; /* Minecraft red */
+  --danger: #E50000; /* A more vibrant red */
   --shadow: 4px 4px 0px rgba(0,0,0,0.5);
   --text-shadow: 2px 2px 0px #3a3a3a;
 }
@@ -172,7 +172,10 @@ header {
   color: var(--success);
 }
 .popup-feedback.error {
-  color: var(--danger);
+  /* Make the error message a solid block for high visibility */
+  background-color: var(--danger);
+  color: var(--white);
+  padding: 4px 8px;
 }
 @media (max-width: 600px) {
   header {
@@ -183,7 +186,12 @@ header {
     flex-direction: column;
   }
   .leaflet-popup-content {
-    font-size: 0.7rem; /* No change, just for context */
+    font-size: 0.9rem; /* Increase base font size for mobile popups */
+  }
+  .leaflet-popup-content b,
+  .leaflet-popup-content .hidden-clue-text,
+  .leaflet-popup-content .hint-text {
+    font-size: 1.1em; /* Make question and hint text even larger */
   }
   #leaderboard {
     width: 100%;
