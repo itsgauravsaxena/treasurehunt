@@ -15,6 +15,7 @@ let teamName = sessionStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
 let clueProgress = JSON.parse(sessionStorage.getItem('clueProgress') || '{}');
 let markers = [];
+let teamClues = JSON.parse(sessionStorage.getItem('teamClues')) || clues;
 
 function calculateTotalScore() {
   // Calculate total score by summing up the points from each clue
@@ -33,9 +34,6 @@ const map = L.map('map', {
 
 L.control.zoom({ position: 'topright' }).addTo(map);
 
-// Center the map on the first clue to guide the players
-map.setView(clues[0].coords, 16); // A zoom level of 16 is good for focusing on a specific spot
-
 // Add OpenStreetMap tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
@@ -45,13 +43,15 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 function startGame(isNewGame) {
   document.getElementById('leaderboard').classList.remove('hidden');
   ui.showMap(map, teamName, calculateTotalScore());
+  // Center the map on the team's specific starting clue
+  map.setView(teamClues[0].coords, 16);
   initializeMarkers();
   if (isNewGame) teamsRef.child(teamId).set({ name: teamName, score: 0 });
 }
 
 function initializeMarkers() {
   if (markers.length > 0) return;
-  clues.forEach((clue, idx) => {
+  teamClues.forEach((clue, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
     const icon = ui.createNumberedIcon(idx + 1, isSolved);
     const marker = L.marker(clue.coords, { icon }).addTo(map);
@@ -128,7 +128,7 @@ function handleCorrectAnswer(idx) {
 
   // Check if all clues are solved
   const solvedCount = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
-  if (solvedCount === clues.length) {
+  if (solvedCount === teamClues.length) {
     setTimeout(ui.showCompletionBanner, 500);
   }
 }
@@ -149,7 +149,7 @@ function checkAnswer(idx, userAnswer) {
   const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
   if (!feedbackDiv) return;
 
-  const correctAnswer = clues[idx].answer;
+  const correctAnswer = teamClues[idx].answer;
   const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
 
   if (isCorrect) {
@@ -229,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.removeItem('teamId');
     sessionStorage.removeItem('teamName');
     sessionStorage.removeItem('clueProgress');
+    sessionStorage.removeItem('teamClues');
     sessionStorage.setItem('appVersion', APP_VERSION);
     window.location.reload(); // Reload to start fresh
   }
@@ -285,6 +286,15 @@ function joinTeam(teamColor) {
   teamId = `${teamColor}-team`;
   teamName = name;
 
+  // Create the specific clue order for the team
+  if (teamColor === 'red') {
+    teamClues = [...clues]; // Normal order for Red Team
+  } else {
+    teamClues = [...clues].reverse(); // Reversed order for Blue Team
+  }
+  // Save this team's unique path to the session
+  sessionStorage.setItem('teamClues', JSON.stringify(teamClues));
+
   sessionStorage.setItem('teamId', teamId);
   sessionStorage.setItem('teamName', teamName);
   startGame(true); // This is a new game
@@ -301,7 +311,10 @@ document.getElementById('clear-leaderboard-btn').onclick = () => {
   if (confirm('ADVARSEL: Dette vil slette ALLE hold og point fra leaderboardet. Er du helt sikker?')) {
     // This removes the entire 'teams' node from Firebase
     teamsRef.remove()
-      .then(() => console.log("Leaderboard cleared successfully."))
+      .then(() => {
+        console.log("Leaderboard cleared successfully.");
+        window.location.reload(); // Reload the page to reset the start screen
+      })
       .catch(error => console.error("Error clearing leaderboard: ", error));
   }
 };
@@ -316,6 +329,7 @@ document.getElementById('reset-btn').onclick = () => {
     sessionStorage.removeItem('teamId');
     sessionStorage.removeItem('teamName');
     sessionStorage.removeItem('clueProgress');
+    sessionStorage.removeItem('teamClues');
     window.location.reload();
   }
 };
