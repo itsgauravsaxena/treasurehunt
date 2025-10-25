@@ -214,6 +214,13 @@ function listenForTeamUpdates() {
   });
 }
 
+function disableTeamSelection(teamColor, teamName) {
+  document.getElementById(`${teamColor}-team-name`).value = teamName;
+  document.getElementById(`${teamColor}-team-name`).disabled = true;
+  document.getElementById(`join-${teamColor}-btn`).disabled = true;
+  document.getElementById(`join-${teamColor}-btn`).textContent = 'Holdet Spiller';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Version check to clear old session data
   const storedVersion = sessionStorage.getItem('appVersion');
@@ -227,7 +234,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   ui.hideCompletionBanner();
-  listenForTeamUpdates();
+
+  // Check for existing teams to manage the start screen
+  teamsRef.once('value', (snapshot) => {
+    const teams = snapshot.val() || {};
+    const teamCount = Object.keys(teams).length;
+    let redTeamName = null;
+    let blueTeamName = null;
+
+    if (teams['red-team']) redTeamName = teams['red-team'].name;
+    if (teams['blue-team']) blueTeamName = teams['blue-team'].name;
+
+    if (redTeamName) disableTeamSelection('red', redTeamName);
+    if (blueTeamName) disableTeamSelection('blue', blueTeamName);
+
+    if (redTeamName && blueTeamName && teamId !== 'red-team' && teamId !== 'blue-team') {
+      document.getElementById('game-full-msg').classList.remove('hidden');
+    }
+  });
+
+  listenForTeamUpdates(); // This will continue to update the leaderboard
   // If team name already set, skip setup
   if (teamId && teamName) {
     startGame(false); // It's not a new game, just restoring state
@@ -247,32 +273,28 @@ document.getElementById('toggle-leaderboard-btn').onclick = () => {
   }, 300); // 300ms matches the CSS transition duration
 };
 
-document.getElementById('start-btn').onclick = () => {
-  const input = document.getElementById('team-name');
+function joinTeam(teamColor) {
+  const input = document.getElementById(`${teamColor}-team-name`);
   const name = input.value.trim();
   if (!name) {
     input.style.borderColor = 'red';
     input.focus();
     return;
   }
-
-  // Create a new team in Firebase
-  const newTeamRef = teamsRef.push();
-  teamId = newTeamRef.key;
+  
+  teamId = `${teamColor}-team`;
   teamName = name;
 
   sessionStorage.setItem('teamId', teamId);
   sessionStorage.setItem('teamName', teamName);
   startGame(true); // This is a new game
-};
+}
 
-// Allow pressing Enter to start
-document.getElementById('team-name').addEventListener('keyup', (event) => {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    document.getElementById('start-btn').click();
-  }
-});
+document.getElementById('join-red-btn').onclick = () => joinTeam('red');
+document.getElementById('join-blue-btn').onclick = () => joinTeam('blue');
+
+document.getElementById('red-team-name').addEventListener('keyup', e => e.key === 'Enter' && joinTeam('red'));
+document.getElementById('blue-team-name').addEventListener('keyup', e => e.key === 'Enter' && joinTeam('blue'));
 
 // Clear leaderboard logic (dev mode only)
 document.getElementById('clear-leaderboard-btn').onclick = () => {
