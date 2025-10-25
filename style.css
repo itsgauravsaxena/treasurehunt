@@ -206,6 +206,9 @@ header {
   .main-container {
     flex-direction: column;
   }
+  .team-join-box {
+    flex-direction: column;
+  }
   .leaflet-popup-content {
     font-size: 0.9rem; /* Increase base font size for mobile popups */
   }
