@@ -22,7 +22,7 @@ jobs:
       - name: Prepare publish directory
         run: |
           mkdir -p dist
-          cp index.html *.js *.css dist/
+          cp *.html *.js *.css dist/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

@@ -53,7 +53,8 @@ function initializeMarkers() {
   if (markers.length > 0) return;
   teamClues.forEach((clue, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
-    const icon = ui.createNumberedIcon(idx + 1, isSolved);
+    const teamColor = teamId ? teamId.split('-')[0] : '';
+    const icon = ui.createNumberedIcon(idx + 1, isSolved, false, teamColor);
     const marker = L.marker(clue.coords, { icon }).addTo(map);
     markers.push(marker);
 
@@ -83,10 +84,11 @@ function initializeMarkers() {
 function updateMarkerStates() {
   const currentClueIndex = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
 
+  const teamColor = teamId ? teamId.split('-')[0] : '';
   markers.forEach((marker, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
     const isDisabled = idx > currentClueIndex;
-    const newIcon = ui.createNumberedIcon(idx + 1, isSolved, isDisabled);
+    const newIcon = ui.createNumberedIcon(idx + 1, isSolved, isDisabled, teamColor);
     marker.setIcon(newIcon);
   });
 
@@ -171,28 +173,6 @@ function checkAnswer(idx, userAnswer) {
 
 // --- Event Listeners and Global Handlers ---
 
-function setupDevMode() {
-  const devToggle = document.getElementById('dev-toggle'); // Listen for changes
-  const isDevMode = localStorage.getItem('devMode') === 'true';
-
-  // Apply state on load
-  if (isDevMode) {
-    devToggle.checked = true;
-    document.body.classList.add('dev-mode');
-  }
-
-  // Listen for changes
-  devToggle.addEventListener('change', () => {
-    if (devToggle.checked) {
-      document.body.classList.add('dev-mode');
-      localStorage.setItem('devMode', 'true');
-    } else {
-      document.body.classList.remove('dev-mode');
-      localStorage.setItem('devMode', 'false');
-    }
-  });
-}
-
 function listenForTeamUpdates() {
   teamsRef.orderByChild('score').on('value', (snapshot) => {
     const leaderboardList = document.getElementById('leaderboard-list');
@@ -260,8 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
     startGame(false); // It's not a new game, just restoring state
     ui.setTeamNameInput(teamName); // Pre-fill the input for clarity
   }
-
-  setupDevMode();
 });
 
 document.getElementById('toggle-leaderboard-btn').onclick = () => {
@@ -305,19 +283,6 @@ document.getElementById('join-blue-btn').onclick = () => joinTeam('blue');
 
 document.getElementById('red-team-name').addEventListener('keyup', e => e.key === 'Enter' && joinTeam('red'));
 document.getElementById('blue-team-name').addEventListener('keyup', e => e.key === 'Enter' && joinTeam('blue'));
-
-// Clear leaderboard logic (dev mode only)
-document.getElementById('clear-leaderboard-btn').onclick = () => {
-  if (confirm('ADVARSEL: Dette vil slette ALLE hold og point fra leaderboardet. Er du helt sikker?')) {
-    // This removes the entire 'teams' node from Firebase
-    teamsRef.remove()
-      .then(() => {
-        console.log("Leaderboard cleared successfully.");
-        window.location.reload(); // Reload the page to reset the start screen
-      })
-      .catch(error => console.error("Error clearing leaderboard: ", error));
-  }
-};
 
 // Reset game logic
 document.getElementById('reset-btn').onclick = () => {
