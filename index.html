@@ -26,12 +26,21 @@
       <button id="reset-btn" class="btn btn-secondary" title="Start Forfra">🔄</button>
       <button id="clear-leaderboard-btn" class="btn btn-secondary dev-only" title="Ryd Leaderboard">🗑️</button>
     </div>
-    <div id="team-setup" class="minecraft-theme">
-      <label for="team-name">Hvad hedder jeres seje hold?</label>
-      <input id="team-name" type="text" placeholder="Holdnavn" />
-      <br>
-      <br>
-      <button id="start-btn" class="btn">Start!</button>
+    <div id="team-setup" class="team-setup-container">
+      <h2>Vælg et hold for at starte!</h2>
+      <div class="team-join-box">
+        <div id="red-team-join" class="team-card red-team">
+          <h3>Rødt Hold</h3>
+          <input id="red-team-name" type="text" placeholder="Indtast holdnavn..." />
+          <button id="join-red-btn" class="btn">Deltag som Rødt Hold</button>
+        </div>
+        <div id="blue-team-join" class="team-card blue-team">
+          <h3>Blåt Hold</h3>
+          <input id="blue-team-name" type="text" placeholder="Indtast holdnavn..." />
+          <button id="join-blue-btn" class="btn">Deltag som Blåt Hold</button>
+        </div>
+      </div>
+      <p id="game-full-msg" class="hidden">Spillet er fuldt! To hold spiller allerede.</p>
     </div>
   </header>
   <div class="main-container">
