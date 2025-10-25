@@ -100,10 +100,6 @@ header {
   margin-bottom: 15px;
 }
 
-#game-full-msg + #clear-leaderboard-btn {
-  margin-top: 20px;
-}
-
 .main-container {
   display: flex;
   flex: 1;
@@ -358,60 +354,12 @@ header {
   /* content: '✓'; */
 }
 
-.numbered-marker.disabled {
-  background-color: var(--primary-dark);
-  opacity: 0.6;
-  cursor: not-allowed;
+.numbered-marker.red-team-marker {
+  background-color: #c0392b; /* Red */
 }
 
-/* Dev Mode Toggle Switch */
-.dev-toggle-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 auto; /* Center it in the available space */
-}
-.dev-toggle-label {
-  font-size: 1em;
-  text-shadow: var(--text-shadow);
-}
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-}
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--primary-dark);
-  border: 2px solid var(--gray);
-  transition: .4s;
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 2px;
-  bottom: 2px;
-  background-color: var(--light-gray);
-  transition: .4s;
-}
-input:checked + .slider {
-  background-color: var(--success);
-}
-input:checked + .slider:before {
-  transform: translateX(20px);
+.numbered-marker.blue-team-marker {
+  background-color: #2980b9; /* Blue */
 }
 
 /* When dev mode is on, show the clue text */
@@ -425,6 +373,12 @@ body.dev-mode .hidden-clue-text {
 
 .dev-mode .dev-only {
   display: inline-block;
+}
+
+.numbered-marker.disabled {
+  background-color: var(--primary-dark);
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Flying Points Animation */

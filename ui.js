@@ -15,9 +15,10 @@ export function updateScoreDisplay(totalScore) {
   document.getElementById('team-score').textContent = 'Point: ' + totalScore;
 }
 
-export function createNumberedIcon(number, isSolved, isDisabled) {
+export function createNumberedIcon(number, isSolved, isDisabled, teamColor) {
   const disabledClass = isDisabled ? 'disabled' : '';
-  const markerHtml = `<div class="numbered-marker ${isSolved ? 'solved' : ''} ${disabledClass}">${number}</div>`;
+  const teamClass = teamColor ? `${teamColor}-marker` : '';
+  const markerHtml = `<div class="numbered-marker ${isSolved ? 'solved' : ''} ${disabledClass} ${teamClass}">${number}</div>`;
   return L.divIcon({
     html: markerHtml,
     className: '', // Leaflet adds its own, we don't need an extra one
