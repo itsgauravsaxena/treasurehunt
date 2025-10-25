@@ -64,7 +64,3 @@ export function showFlyingPoints(points) {
   // Remove the element after the animation completes (1.5s)
   setTimeout(() => flyingTextElement.remove(), 1500);
 }
-
-export function setTeamNameInput(name) {
-    document.getElementById('team-name').value = name;
-}
