@@ -15,7 +15,6 @@ let teamName = sessionStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
 let clueProgress = JSON.parse(sessionStorage.getItem('clueProgress') || '{}');
 let markers = [];
-let teamClues = JSON.parse(sessionStorage.getItem('teamClues')) || clues;
 
 function calculateTotalScore() {
   // Calculate total score by summing up the points from each clue
@@ -30,9 +29,12 @@ function calculateTotalScore() {
 const map = L.map('map', {
   zoomControl: false,
   preferCanvas: true
-}).setView([55.687866247454544, 12.440356125771856], 14);
+});
 
 L.control.zoom({ position: 'topright' }).addTo(map);
+
+// Center the map on the first clue to guide the players
+map.setView(clues[0].coords, 16); // A zoom level of 16 is good for focusing on a specific spot
 
 // Add OpenStreetMap tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -49,7 +51,7 @@ function startGame(isNewGame) {
 
 function initializeMarkers() {
   if (markers.length > 0) return; // Don't re-initialize if markers already exist
-  teamClues.forEach((clue, idx) => {
+  clues.forEach((clue, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
     const icon = ui.createNumberedIcon(idx + 1, isSolved);
     const marker = L.marker(clue.coords, { icon }).addTo(map);
@@ -113,7 +115,7 @@ function handleCorrectAnswer(idx) {
 
   // Check if all clues are solved
   const solvedCount = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
-  if (solvedCount === teamClues.length) {
+  if (solvedCount === clues.length) {
     setTimeout(ui.showCompletionBanner, 500);
   }
 }
@@ -127,7 +129,7 @@ function checkAnswer(idx, userAnswer) {
   const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
   if (!feedbackDiv) return;
 
-  const correctAnswer = teamClues[idx].answer;
+  const correctAnswer = clues[idx].answer;
   const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
 
   if (isCorrect) {
@@ -144,17 +146,6 @@ function checkAnswer(idx, userAnswer) {
 
     feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
     feedbackDiv.className = 'popup-feedback error';
-  }
-}
-
-/**
- * Shuffles an array in place using the Fisher-Yates algorithm.
- * @param {Array} array The array to shuffle.
- */
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
@@ -211,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.removeItem('teamId');
     sessionStorage.removeItem('teamName');
     sessionStorage.removeItem('clueProgress');
-    sessionStorage.removeItem('teamClues');
     sessionStorage.setItem('appVersion', APP_VERSION);
     window.location.reload(); // Reload to start fresh
   }
@@ -251,13 +241,6 @@ document.getElementById('start-btn').onclick = () => {
   teamId = newTeamRef.key;
   teamName = name;
 
-  // Create a unique, shuffled clue order for this new team
-  const newTeamClues = [...clues]; // Create a copy of the master clues
-  shuffleArray(newTeamClues);
-  teamClues = newTeamClues; // Update the in-memory clues for this session
-  sessionStorage.setItem('teamClues', JSON.stringify(teamClues));
-  sessionStorage.setItem('appVersion', APP_VERSION); // Set version on new game
-
   sessionStorage.setItem('teamId', teamId);
   sessionStorage.setItem('teamName', teamName);
   startGame(true); // This is a new game
@@ -291,7 +274,6 @@ document.getElementById('reset-btn').onclick = () => {
     sessionStorage.removeItem('teamId');
     sessionStorage.removeItem('teamName');
     sessionStorage.removeItem('clueProgress');
-    sessionStorage.removeItem('teamClues');
     window.location.reload();
   }
 };
