@@ -33,10 +33,8 @@ const map = L.map('map', {
 
 L.control.zoom({ position: 'topright' }).addTo(map);
 
-// Calculate the bounding box of all clues to center the map
-const clueCoords = clues.map(clue => clue.coords);
-const bounds = L.latLngBounds(clueCoords);
-map.fitBounds(bounds, { padding: [50, 50] }); // Add padding so markers aren't on the edge
+// Center the map on the first clue to guide the players
+map.setView(clues[0].coords, 16); // A zoom level of 16 is good for focusing on a specific spot
 
 // Add OpenStreetMap tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
