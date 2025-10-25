@@ -1,6 +1,6 @@
 export const clues = [
   {
-    coords: [55.6878, 12.4360], // 1. Start south of the bunker
+    coords: [55.68696830796677, 12.441323778391876], // 1. Købmand
     text: "🎡 Hvad hedder den berømte forlystelsespark midt i København?",
     options: ["Tivoli", "Bakken", "Legoland"],
     answer: "Tivoli",
@@ -8,7 +8,7 @@ export const clues = [
     hint: "Find det laveste punkt i området."
   },
   {
-    coords: [55.6883, 12.4365], // 2. Move north to the bunker
+    coords: [55.68695494871787, 12.439874297646213], // 2. Ejbyvej road sign
     text: "⚽ Hvad er kælenavnet for det danske herrelandshold i fodbold?",
     options: ["De Rød-Hvide", "De Blå-Gule", "Løverne"],
     answer: "De Rød-Hvide",
@@ -16,7 +16,7 @@ export const clues = [
     hint: "Kig nær den store betonkonstruktion."
   },
   {
-    coords: [55.6888, 12.4375], // 3. Continue north along the path
+    coords: [55.687032690311014, 12.438615004732753], // 3. Behind the pole ejbyvænge
     text: "🎮 Hvilket af disse spil er IKKE lavet i Danmark?",
     options: ["Fortnite", "Subway Surfers", "Hitman"],
     answer: "Fortnite",
@@ -24,7 +24,7 @@ export const clues = [
     hint: "Følg stien, hvor træerne danner en tunnel."
   },
   {
-    coords: [55.6880, 12.4395], // 4. Head east inside Vestvolden
+    coords: [55.686960424146285, 12.437665374624837], // 4. Behind arrow sign on road
     text: "⚔️ Hvad kaldte man de danske krigere i gamle dage, som sejlede i langskibe?",
     options: ["Vikinger", "Riddere", "Samuraier"],
     answer: "Vikinger",
@@ -32,7 +32,7 @@ export const clues = [
     hint: "Gå mod øst, hvor volden er bredest."
   },
   {
-    coords: [55.6875, 12.4385], // 5. A short walk south
+    coords: [55.686970142729656, 12.43602611815933], // 5. 2 Little TDC boxes
     text: "🐻‍❄️ Hvilken stor hvid bjørn lever i Grønland?",
     options: ["Isbjørn", "Panda", "Grizzlybjørn"],
     answer: "Isbjørn",
@@ -40,7 +40,7 @@ export const clues = [
     hint: "Et sted med udsigt over vandet."
   },
   {
-    coords: [55.6893, 12.4390], // 6. North again on the main path
+    coords: [55.6869651359237, 12.435446941494142], // 6. Another TDC box
     text: "🧜‍♀️ Hvem skrev eventyret om 'Den Lille Havfrue'?",
     options: ["H.C. Andersen", "Brødrene Grimm", "Astrid Lindgren"],
     answer: "H.C. Andersen",
@@ -48,7 +48,7 @@ export const clues = [
     hint: "Find en bænk med god udsigt."
   },
   {
-    coords: [55.6898, 12.4404], // 7. To the bridge at the north entrance
+    coords: [55.6875977,12.4354654], // 7. Old 
     text: "📍 Hvad er hovedstaden i Danmark?",
     options: ["København", "Oslo", "Stockholm"],
     answer: "København",
@@ -192,7 +192,7 @@ export const clues = [
     hint: "Kig efter en dør, der ser malplaceret ud."
   },
   {
-    coords: [55.6884, 12.4465], // 25. Final clue, back west
+    coords: [55.68777105484344, 12.440442195797196], // 25. Mahims house
     text: "🏡 Hvad kan man IKKE gøre i det populære Roblox-spil 'Brookhaven'?",
     options: ["Kæmpe mod drager", "Køre i bil", "Eje et hus"],
     answer: "Kæmpe mod drager",
