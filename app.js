@@ -45,12 +45,12 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 function startGame(isNewGame) {
   document.getElementById('leaderboard').classList.remove('hidden');
   ui.showMap(map, teamName, calculateTotalScore());
-  initializeMarkers(); // Create markers only when the game starts
+  initializeMarkers();
   if (isNewGame) teamsRef.child(teamId).set({ name: teamName, score: 0 });
 }
 
 function initializeMarkers() {
-  if (markers.length > 0) return; // Don't re-initialize if markers already exist
+  if (markers.length > 0) return;
   clues.forEach((clue, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
     const icon = ui.createNumberedIcon(idx + 1, isSolved);
@@ -77,6 +77,20 @@ function initializeMarkers() {
       L.DomEvent.disableClickPropagation(popupContainer);
     });
   });
+  updateMarkerStates(); // Set initial enabled/disabled states
+}
+
+function updateMarkerStates() {
+  const currentClueIndex = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
+
+  markers.forEach((marker, idx) => {
+    const isSolved = clueProgress[idx] && clueProgress[idx].solved;
+    const isDisabled = idx > currentClueIndex;
+    const newIcon = ui.createNumberedIcon(idx + 1, isSolved, isDisabled);
+    marker.setIcon(newIcon);
+  });
+
+  map.closePopup();
 }
 
 function handleCorrectAnswer(idx) {
@@ -108,8 +122,7 @@ function handleCorrectAnswer(idx) {
   ui.showFlyingPoints(pointsWon);
 
   // Update UI
-  const solvedIcon = ui.createNumberedIcon(idx + 1, true);
-  markers[idx].setIcon(solvedIcon);
+  updateMarkerStates(); // This will mark the current as solved and enable the next one
   ui.updateScoreDisplay(calculateTotalScore());
   sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
 
@@ -126,6 +139,13 @@ function handleCorrectAnswer(idx) {
  * @param {string} userAnswer - The user's submitted answer.
  */
 function checkAnswer(idx, userAnswer) {
+  const currentClueIndex = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
+  if (idx !== currentClueIndex) {
+    // User is trying to answer a clue out of sequence
+    alert("Du skal løse sporene i rækkefølge!");
+    return;
+  }
+
   const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
   if (!feedbackDiv) return;
 
