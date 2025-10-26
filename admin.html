@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <title>Admin Panel - Skattejagt</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Admin Panel</h1>
+  </header>
+  <div class="team-setup-container">
+    <h2>Master Controls</h2>
+    <p>Disse handlinger påvirker spillet for alle spillere.</p>
+    <button id="clear-leaderboard-btn" class="btn" title="Ryd Alle Hold">🗑️ Ryd Alle Hold</button>
+    <br><br>
+    <a href="index.html" class="btn btn-secondary">Tilbage til spillet</a>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
