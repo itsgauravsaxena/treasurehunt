@@ -16,8 +16,7 @@ const staticClues = [
     options: ["Minecraft", "Roblox", "Fortnite"],
     answer: "Minecraft",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Købmand den mest populære"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68695494871787, 12.439874297646213], // 2. Ejbyvej road sign
@@ -25,8 +24,7 @@ const staticClues = [
     options: ["Gepard", "Løve", "Hest"],
     answer: "Gepard",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ejbyvej vejskilt"
+    ageGroup: "9-11"
   },
   {
     coords: [55.687032690311014, 12.438615004732753], // 3. Behind the pole ejbyvænge
@@ -34,8 +32,7 @@ const staticClues = [
     options: ["Mars", "Jupiter", "Venus"],
     answer: "Mars",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Bag pælen ved Ejbyvænge"
+    ageGroup: "9-11"
   },
   {
     coords: [55.686960424146285, 12.437665374624837], // 4. Behind arrow sign on road
@@ -43,8 +40,7 @@ const staticClues = [
     options: ["København", "Aarhus", "Odense"],
     answer: "København",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Bag pileskiltet på vejen"
+    ageGroup: "9-11"
   },
   {
     coords: [55.686970142729656, 12.43602611815933], // 5. 2 Little TDC boxes
@@ -52,8 +48,7 @@ const staticClues = [
     options: ["Spider-Man", "Superman", "Batman"],
     answer: "Spider-Man",
     type: "options",
-    ageGroup: "9-11",
-    hint: "2 små TDC-bokse"
+    ageGroup: "9-11"
   },
   {
     coords: [55.6869651359237, 12.435446941494142], // 6. Another TDC box
@@ -61,8 +56,7 @@ const staticClues = [
     options: ["Stillehavet", "Atlanterhavet", "Det Indiske Ocean"],
     answer: "Stillehavet",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Endnu en TDC-boks"
+    ageGroup: "12-14"
   },
   {
     coords: [55.6875977,12.4354654], // 7. Old bunker building
@@ -70,8 +64,7 @@ const staticClues = [
     options: ["J.K. Rowling", "H.C. Andersen", "Astrid Lindgren"],
     answer: "J.K. Rowling",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Gammel bunkebygning"
+    ageGroup: "9-11"
   },
   {
     coords: [55.6879552,12.4349564], // 8. Pillar before bridge
@@ -79,8 +72,7 @@ const staticClues = [
     options: ["Apple", "Samsung", "Google"],
     answer: "Apple",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Søjle før broen"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68807811514166, 12.434463706161942], // 9. End of the bridge
@@ -88,8 +80,7 @@ const staticClues = [
     options: ["Brachiosaurus", "T-Rex", "Triceratops"],
     answer: "Brachiosaurus",
     type: "options",
-    ageGroup: "9-11",
-    hint: "For enden af broen"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68824114692889, 12.433749126035053], // 10. T junction further after bridge
@@ -97,8 +88,7 @@ const staticClues = [
     options: ["11", "7", "9"],
     answer: "11",
     type: "options",
-    ageGroup: "9-11",
-    hint: "T-kryds længere efter broen"
+    ageGroup: "9-11"
   },
   {
     coords: [55.6878498,12.4354218], // 11.On way back from bridge road there is a no car roadsign
@@ -106,8 +96,7 @@ const staticClues = [
     options: ["Italien", "USA", "Frankrig"],
     answer: "Italien",
     type: "options",
-    ageGroup: "9-11",
-    hint: "På vej tilbage fra brovejen er der et 'kørsel forbudt' skilt"
+    ageGroup: "9-11"
   },
   {
     coords: [55.6880306,12.4357766], // 12. Entrance to military area on metal door
@@ -115,8 +104,7 @@ const staticClues = [
     options: ["H2O", "CO2", "O2"],
     answer: "H2O",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Indgang til militærområde på metaldør"
+    ageGroup: "12-14"
   },
   {
     coords: [55.68866504076029, 12.436271208776882], // 13. Map of bunkers and fortification
@@ -124,8 +112,7 @@ const staticClues = [
     options: ["Solen", "Sirius", "Polaris"],
     answer: "Solen",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Kort over bunkers og befæstning"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68836367049055, 12.436260537384154], // 14. Where there is a tank placed
@@ -133,8 +120,7 @@ const staticClues = [
     options: ["Leonardo da Vinci", "Picasso", "Van Gogh"],
     answer: "Leonardo da Vinci",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Hvor der er en tank placeret"
+    ageGroup: "12-14"
   },
   {
     coords: [55.68896476743011, 12.437271880241783], // 15. On one of the metal crossbars
@@ -142,8 +128,7 @@ const staticClues = [
     options: ["Thor", "Odin", "Loke"],
     answer: "Thor",
     type: "options",
-    ageGroup: "9-11",
-    hint: "På en af metaltværbjælkerne"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68946350583189, 12.436652953241998], // 16. Near ejbybunkers there should be a clue
@@ -151,8 +136,7 @@ const staticClues = [
     options: ["Abe", "Løve", "Elefant"],
     answer: "Abe",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Nær Ejbybunkers skulle der være et spor"
+    ageGroup: "9-11"
   },
   {
     coords: [55.686984776921854, 12.434759989174783], // 17. Hofor water station 
@@ -160,8 +144,7 @@ const staticClues = [
     options: ["Paris", "London", "Rom"],
     answer: "Paris",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Hofor vandstation"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68694652751955, 12.43714555066889], // 18. Another roadsign showing direction
@@ -169,8 +152,7 @@ const staticClues = [
     options: ["Minions", "Smølfer", "Trolde"],
     answer: "Minions",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Endnu et vejskilt, der viser retning"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68712902847947, 12.437522998133703], // 19. Speed limit sign 30
@@ -178,8 +160,7 @@ const staticClues = [
     options: ["Jolly Roger", "Dannebrog", "Union Jack"],
     answer: "Jolly Roger",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Fartgrænse 30-skilt"
+    ageGroup: "12-14"
   },
   {
     coords: [55.687411089962794, 12.437368926962439], // 20. Nørregardsvej road sign
@@ -187,8 +168,7 @@ const staticClues = [
     options: ["Gå i hi", "Dvale", "Snorke"],
     answer: "Gå i hi",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Nørregårdsvej vejskilt"
+    ageGroup: "9-11"
   },
   {
     coords: [55.687804768539785, 12.437697522257107], // 21. Metal frame at entrance of Nyskiftevej
@@ -196,8 +176,7 @@ const staticClues = [
     options: ["Elsa", "Anna", "Ariel"],
     answer: "Elsa",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Metalramme ved indgangen til Nyskiftevej"
+    ageGroup: "9-11"
   },
   {
     coords: [55.6877777791366, 12.438024632995544], // 22. Street lamp infront of house number 56
@@ -205,8 +184,7 @@ const staticClues = [
     options: ["Volkswagen", "Ford", "Toyota"],
     answer: "Volkswagen",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Gadelampe foran husnummer 56"
+    ageGroup: "12-14"
   },
   {
     coords: [55.68780802027629, 12.439163026610396], // 23. TDC box near house number 42
@@ -214,8 +192,7 @@ const staticClues = [
     options: ["Lugtesansen", "Synet", "Hørelsen"],
     answer: "Lugtesansen",
     type: "options",
-    ageGroup: "9-11",
-    hint: "TDC-boks nær husnummer 42"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68782459987383, 12.43997944732714], // 24. Where is Oscar's house
@@ -223,8 +200,7 @@ const staticClues = [
     options: ["En", "To", "Ingen"],
     answer: "En",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Hvor er Oscars hus"
+    ageGroup: "9-11"
   },
   {
     coords: [55.68777105484344, 12.440442195797196], // 25. Mahims house
@@ -232,8 +208,7 @@ const staticClues = [
     options: ["Plastik", "Træ", "Metal"],
     answer: "Plastik",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Mahims hus"
+    ageGroup: "9-11"
   }
   ,
   {
@@ -242,8 +217,7 @@ const staticClues = [
     options: ["Blå", "Grøn", "Rød"],
     answer: "Blå",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Kig ved et træ med et fuglehus."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6874, 12.4410], // 27. New clue
@@ -251,8 +225,7 @@ const staticClues = [
     options: ["Pikachu", "Charmander", "Squirtle"],
     answer: "Pikachu",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Find en rød postkasse."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6872, 12.4405], // 28. New clue
@@ -260,8 +233,7 @@ const staticClues = [
     options: ["365", "366", "360"],
     answer: "365",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Under en stor sten."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6870, 12.4400], // 29. New clue
@@ -269,8 +241,7 @@ const staticClues = [
     options: ["Ko", "Gris", "Får"],
     answer: "Ko",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved siden af skraldespanden."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6868, 12.4395], // 30. New clue
@@ -278,8 +249,7 @@ const staticClues = [
     options: ["56", "49", "64"],
     answer: "56",
     type: "options",
-    ageGroup: "9-11",
-    hint: "På en lygtepæl."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6867, 12.4385], // 31. New clue
@@ -287,8 +257,7 @@ const staticClues = [
     options: ["Superman", "Batman", "Iron Man"],
     answer: "Superman",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved indgangen til parken."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6868, 12.4375], // 32. New clue
@@ -296,8 +265,7 @@ const staticClues = [
     options: ["Killing", "Hvalp", "Føl"],
     answer: "Killing",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Bag en busk."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6870, 12.4365], // 33. New clue
@@ -305,8 +273,7 @@ const staticClues = [
     options: ["Egypten", "Kina", "Mexico"],
     answer: "Egypten",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved et 'Parkering Forbudt' skilt."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6885, 12.4355], // 34. New clue
@@ -314,8 +281,7 @@ const staticClues = [
     options: ["8", "6", "10"],
     answer: "8",
     type: "options",
-    ageGroup: "9-11",
-    hint: "På et spindelvæv i et hjørne."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6890, 12.4350], // 35. New clue
@@ -323,8 +289,7 @@ const staticClues = [
     options: ["Lilla", "Grøn", "Orange"],
     answer: "Lilla",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved en farverig blomsterbusk."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6895, 12.4345], // 36. New clue
@@ -332,8 +297,7 @@ const staticClues = [
     options: ["Blåhval", "Elefant", "Giraf"],
     answer: "Blåhval",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Kig mod den store åbne plads."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6892, 12.4335], // 37. New clue
@@ -341,8 +305,7 @@ const staticClues = [
     options: ["Neil Armstrong", "Buzz Aldrin", "Andreas Mogensen"],
     answer: "Neil Armstrong",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Ved en flagstang."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6888, 12.4330], // 38. New clue
@@ -350,8 +313,7 @@ const staticClues = [
     options: ["Klaver", "Guitar", "Trompet"],
     answer: "Klaver",
     type: "options",
-    ageGroup: "9-11",
-    hint: "På en bænk, hvor man kan sidde."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6884, 12.4325], // 39. New clue
@@ -359,8 +321,7 @@ const staticClues = [
     options: ["Voldemort", "Dumbledore", "Snape"],
     answer: "Voldemort",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Et mørkt og skyggefuldt sted."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6880, 12.4320], // 40. New clue
@@ -368,8 +329,7 @@ const staticClues = [
     options: ["Badminton", "Tennis", "Squash"],
     answer: "Badminton",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Nær et net eller hegn."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6876, 12.4325], // 41. New clue
@@ -377,8 +337,7 @@ const staticClues = [
     options: ["Lille Gubben", "Hr. Nilsson", "Tornado"],
     answer: "Lille Gubben",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved en pæl med et hestesymbol."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6872, 12.4330], // 42. New clue
@@ -386,8 +345,7 @@ const staticClues = [
     options: ["En stolthed", "En flok", "En bande"],
     answer: "En stolthed",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Et sted hvor man kan samles."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6874, 12.4340], // 43. New clue
@@ -395,8 +353,7 @@ const staticClues = [
     options: ["Løvernes Konge", "Aladdin", "Tarzan"],
     answer: "Løvernes Konge",
     type: "options",
-    ageGroup: "9-11",
-    hint: "På en bakketop med god udsigt."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6879, 12.4370], // 44. New clue
@@ -404,8 +361,7 @@ const staticClues = [
     options: ["144", "124", "132"],
     answer: "144",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved et skilt med tal på."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6882, 12.4380], // 45. New clue
@@ -413,8 +369,7 @@ const staticClues = [
     options: ["Asien", "Afrika", "Nordamerika"],
     answer: "Asien",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Find det største træ i nærheden."
+    ageGroup: "12-14"
   }
   ,
   {
@@ -423,8 +378,7 @@ const staticClues = [
     options: ["Bambus", "Fisk", "Bær"],
     answer: "Bambus",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved en gruppe af høje, tynde træer."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6896, 12.4370], // 47. New clue
@@ -432,8 +386,7 @@ const staticClues = [
     options: ["Australien", "Canada", "Brasilien"],
     answer: "Australien",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Et sted hvor man kan hoppe."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6893, 12.4380], // 48. New clue
@@ -441,8 +394,7 @@ const staticClues = [
     options: ["Astronom", "Biolog", "Geolog"],
     answer: "Astronom",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Kig op mod himlen fra et åbent område."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6890, 12.4390], // 49. New clue
@@ -450,8 +402,7 @@ const staticClues = [
     options: ["Han bliver større", "Han bliver usynlig", "Han kan flyve"],
     answer: "Han bliver større",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Under noget, der ligner en svamp."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6887, 12.4400], // 50. New clue
@@ -459,8 +410,7 @@ const staticClues = [
     options: ["Hjertet", "Hjernen", "Lungen"],
     answer: "Hjertet",
     type: "options",
-    ageGroup: "9-11",
-    hint: "I midten af det hele."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6884, 12.4410], // 51. New clue
@@ -468,8 +418,7 @@ const staticClues = [
     options: ["Thomas Edison", "Albert Einstein", "Isaac Newton"],
     answer: "Thomas Edison",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Ved en lygtepæl, der lyser op."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6881, 12.4420], // 52. New clue
@@ -477,8 +426,7 @@ const staticClues = [
     options: ["Klaver", "Violin", "Guitar"],
     answer: "Klaver",
     type: "options",
-    ageGroup: "9-11",
-    hint: "På en bænk med sorte og hvide striber."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6878, 12.4430], // 53. New clue
@@ -486,8 +434,7 @@ const staticClues = [
     options: ["Hogwarts", "Beauxbatons", "Durmstrang"],
     answer: "Hogwarts",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved en bygning, der ligner en skole."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6875, 12.4440], // 54. New clue
@@ -495,8 +442,7 @@ const staticClues = [
     options: ["Kompas", "Kikkert", "Ur"],
     answer: "Kompas",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved et skilt, der peger i en retning."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6872, 12.4450], // 55. New clue
@@ -504,8 +450,7 @@ const staticClues = [
     options: ["Mount Everest", "K2", "Mont Blanc"],
     answer: "Mount Everest",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Find det højeste punkt i nærheden."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6869, 12.4460], // 56. New clue
@@ -513,8 +458,7 @@ const staticClues = [
     options: ["Fast", "Flydende", "Gas"],
     answer: "Fast",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Et koldt sted i skyggen."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6866, 12.4450], // 57. New clue
@@ -522,8 +466,7 @@ const staticClues = [
     options: ["Link", "Zelda", "Ganon"],
     answer: "Link",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Ved en kæde eller et hegn."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6863, 12.4440], // 58. New clue
@@ -531,8 +474,7 @@ const staticClues = [
     options: ["7", "6", "8"],
     answer: "7",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Find noget med mange farver."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6860, 12.4430], // 59. New clue
@@ -540,8 +482,7 @@ const staticClues = [
     options: ["Nåleskov", "Løvskov", "Regnskov"],
     answer: "Nåleskov",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Under et stedsegrønt træ."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6863, 12.4420], // 60. New clue
@@ -549,8 +490,7 @@ const staticClues = [
     options: ["Zeus", "Hades", "Poseidon"],
     answer: "Zeus",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Ved en statue eller en søjle."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6866, 12.4410], // 61. New clue
@@ -558,8 +498,7 @@ const staticClues = [
     options: ["Palæontolog", "Arkæolog", "Zoolog"],
     answer: "Palæontolog",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Et sted hvor man kan grave i jorden."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6899, 12.4425], // 62. New clue
@@ -567,8 +506,7 @@ const staticClues = [
     options: ["Flagermus", "Egern", "Mus"],
     answer: "Flagermus",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Kig op i et gammelt træ."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6897, 12.4435], // 63. New clue
@@ -576,8 +514,7 @@ const staticClues = [
     options: ["Short Message Service", "Super hurtig besked", "Send min besked"],
     answer: "Short Message Service",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Ved et informationsskilt."
+    ageGroup: "12-14"
   },
   {
     coords: [55.6894, 12.4455], // 64. New clue
@@ -585,8 +522,7 @@ const staticClues = [
     options: ["Bæver", "Odder", "Sæl"],
     answer: "Bæver",
     type: "options",
-    ageGroup: "9-11",
-    hint: "Nær vandet."
+    ageGroup: "9-11"
   },
   {
     coords: [55.6891, 12.4470], // 65. New clue
@@ -594,8 +530,7 @@ const staticClues = [
     options: ["Kuldioxid (CO2)", "Ilt (O2)", "Brint (H2)"],
     answer: "Kuldioxid (CO2)",
     type: "options",
-    ageGroup: "12-14",
-    hint: "Ved en stor grøn plante."
+    ageGroup: "12-14"
   }
 ];
 
