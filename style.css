@@ -80,6 +80,19 @@ header {
   margin-bottom: 12px;
 }
 
+#age-group-select {
+  font-family: 'Press Start 2P', cursive;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid var(--gray);
+  background: var(--bg);
+  color: var(--secondary);
+}
+
+.team-setup-container label[for="age-group-select"] {
+  margin-bottom: 5px;
+}
+
 #loading-msg {
   margin-top: 10px;
 }

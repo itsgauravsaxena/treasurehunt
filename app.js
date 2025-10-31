@@ -16,7 +16,7 @@ let teamName = localStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
 let clueProgress = JSON.parse(localStorage.getItem('clueProgress') || '{}');
 let markers = [];
-let clues = staticClues; // Default to static clues
+let clues = JSON.parse(localStorage.getItem('clues')) || staticClues;
 
 function calculateTotalScore() {
   // Calculate total score by summing up the points from each clue
@@ -234,53 +234,51 @@ document.getElementById('start-btn').onclick = async () => {
     return;
   }
 
-  // Check if the user is continuing with their saved game
-  const savedClues = JSON.parse(localStorage.getItem('clues'));
-  if (localStorage.getItem('teamName') === name && savedClues) {
-    clues = savedClues; // Load saved random clues
-    startGame(false);
-    return;
-  }
+  // Query Firebase to see if a team with this name already exists
+  teamsRef.orderByChild('name').equalTo(name).once('value', (snapshot) => {
+    if (snapshot.exists()) {
+      // Team exists, resume game
+      console.log("Team exists. Resuming game.");
+      const existingTeamData = snapshot.val();
+      teamId = Object.keys(existingTeamData)[0]; // Get the team's unique ID
+      const teamData = existingTeamData[teamId];
 
-  // Show loading indicator
-  const startButton = document.getElementById('start-btn');
-  const loadingMsg = document.getElementById('loading-msg');
-  startButton.disabled = true;
-  loadingMsg.classList.remove('hidden');
+      teamName = teamData.name;
+      clueProgress = teamData.clueProgress || {};
 
-  // NOTE: API fetching is disabled to use the custom Danish questions.
-  // try {
-  //   // Fetch new random questions and merge them with static locations
-  //   const newClues = await fetchRandomClues();
-  //   clues = newClues;
-  //   localStorage.setItem('clues', JSON.stringify(clues)); // Save the new set of clues
-  // } catch (error) {
-  //   console.error("Could not fetch new clues, using fallback.", error);
-  //   alert("Kunne ikke hente nye spørgsmål. Bruger standard spørgsmål.");
-  //   clues = staticClues; // Fallback to static clues on error
-  // } finally {
-  //   // Hide loading indicator
-  //   startButton.disabled = false;
-  //   loadingMsg.classList.add('hidden');
-  // }
+      // Save to local storage to establish the session
+      localStorage.setItem('teamId', teamId);
+      localStorage.setItem('teamName', teamName);
+      localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
 
-  // Otherwise, start a new game
-  const newTeamRef = teamsRef.push();
-  teamId = newTeamRef.key;
-  teamName = name;
+      startGame(false); // It's not a new game
+    } else {
+      // Team does not exist, create a new one
+      console.log("Team does not exist. Creating new game.");
+      const newTeamRef = teamsRef.push();
+      const selectedAgeGroup = document.getElementById('age-group-select').value;
 
-  localStorage.setItem('teamId', teamId);
-  localStorage.setItem('teamName', teamName);
-  // Clear progress for the new game
-  localStorage.removeItem('clueProgress');
-  clueProgress = {};
+      // --- Create a new random set of 25 clues ---
+      // Filter clues by the selected age group
+      const ageAppropriateClues = staticClues.filter(clue => clue.ageGroup === selectedAgeGroup || !clue.ageGroup);
+      
+      shuffleArray(ageAppropriateClues); // Shuffle the filtered list
+      clues = ageAppropriateClues.slice(0, 25); // Take the first 25
+      // ---------------------------------------------
 
-  // Use the static clues and start the game immediately
-  clues = staticClues;
-  startButton.disabled = false;
-  loadingMsg.classList.add('hidden');
+      teamId = newTeamRef.key;
+      teamName = name;
+      clueProgress = {}; // Reset progress for new game
 
-  startGame(true); // This is a new game
+      // Save to local storage
+      localStorage.setItem('teamId', teamId);
+      localStorage.setItem('teamName', teamName);
+      localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
+      localStorage.setItem('clues', JSON.stringify(clues)); // Save the unique clue set for this session
+
+      startGame(true); // This is a new game
+    }
+  });
 };
 
 document.getElementById('team-name').addEventListener('keyup', (event) => {
@@ -320,6 +318,17 @@ document.getElementById('reset-btn').onclick = () => {
     window.location.reload();
   }
 };
+
+/**
+ * Shuffles an array in place using the Fisher-Yates algorithm.
+ * @param {Array} array The array to shuffle.
+ */
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
 async function fetchRandomClues() {
   const response = await fetch(`https://opentdb.com/api.php?amount=${staticClues.length}&type=multiple&encode=base64`);
