@@ -8,7 +8,7 @@ const teamsRef = database.ref('teams');
 firebase.analytics(); // Initialize Firebase Analytics
 
 // --- App State ---
-const APP_VERSION = '1.1'; // Increment this when clue data structure changes
+const APP_VERSION = '1.2'; // Increment this when clue data structure changes
 
 // Team setup and score logic
 let teamId = localStorage.getItem('teamId') || null;
@@ -16,6 +16,8 @@ let teamName = localStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
 let clueProgress = JSON.parse(localStorage.getItem('clueProgress') || '{}');
 let markers = [];
+let userMarker = null;
+let userLatLng = null;
 let clues = JSON.parse(localStorage.getItem('clues')) || staticClues;
 
 function calculateTotalScore() {
@@ -37,6 +39,7 @@ L.control.zoom({ position: 'topright' }).addTo(map);
 
 function startGame(isNewGame) {
   document.getElementById('leaderboard').classList.remove('hidden');
+  startGeolocation(); // Ask for and start tracking user's location
   ui.showMap(map, teamName, calculateTotalScore());
   // Center the map on the first clue to guide the players
   map.setView(clues[0].coords, 16);
@@ -58,7 +61,7 @@ function initializeMarkers() {
 
     // Build the popup content
     let popupContent = `<b>Spor ${idx + 1}</b><span class="hidden-clue-text">${clue.text}</span><br>`;
-    popupContent += `<div class="hint-text">💡 ${clue.hint}</div><div id='options-${idx}'>`;
+    popupContent += `<div class="distance-lock-msg" id="distance-msg-${idx}">Du er for langt væk. Kom tættere på!</div><div id='options-${idx}'>`;
     if (clue.type === "options") {
       clue.options.forEach(opt => {
         popupContent += `<button class="popup-btn btn-secondary" style="margin:4px;" onclick="window.selectAnswer(${idx}, '${opt}')">${opt}</button>`;
@@ -72,11 +75,50 @@ function initializeMarkers() {
 
     // Prevent popups from closing when interacting with content inside them
     marker.on('popupopen', () => {
+      checkProximityToClue(idx); // Check distance when popup opens
       const popupContainer = marker.getPopup().getElement().querySelector('.leaflet-popup-content');
       L.DomEvent.disableClickPropagation(popupContainer);
     });
   });
   updateMarkerStates(); // Set initial enabled/disabled states
+}
+
+function checkProximityToClue(clueIndex) {
+  if (!userLatLng) return; // Can't check if we don't have user location
+
+  const clue = clues[clueIndex];
+  const clueLatLng = L.latLng(clue.coords);
+  const distance = userLatLng.distanceTo(clueLatLng);
+
+  const optionsDiv = document.getElementById(`options-${clueIndex}`);
+  const distanceMsgDiv = document.getElementById(`distance-msg-${clueIndex}`);
+
+  if (distance <= 200) { // User is within 20 meters
+    optionsDiv.style.display = 'block';
+    distanceMsgDiv.style.display = 'none';
+  } else { // User is too far
+    optionsDiv.style.display = 'none';
+    distanceMsgDiv.style.display = 'block';
+    distanceMsgDiv.textContent = `Du er for langt væk. Kom tættere på! (${Math.round(distance)} meter væk)`;
+  }
+}
+
+function startGeolocation() {
+  if (!('geolocation' in navigator)) {
+    alert("Geolokation er ikke understøttet af din browser. Spillet kan ikke spilles.");
+    return;
+  }
+
+  navigator.geolocation.watchPosition(position => {
+    userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
+    if (!userMarker) {
+      userMarker = L.marker(userLatLng, { icon: L.divIcon({ className: 'user-location-marker' }) }).addTo(map);
+    } else {
+      userMarker.setLatLng(userLatLng);
+    }
+  }, () => {
+    alert("Kunne ikke få din placering. Tillad venligst adgang til din placering for at spille.");
+  }, { enableHighAccuracy: true });
 }
 
 function updateMarkerStates() {
