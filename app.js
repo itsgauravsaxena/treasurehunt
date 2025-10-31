@@ -15,7 +15,6 @@ let teamName = sessionStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
 let clueProgress = JSON.parse(sessionStorage.getItem('clueProgress') || '{}');
 let markers = [];
-let teamClues = JSON.parse(sessionStorage.getItem('teamClues')) || clues;
 
 function calculateTotalScore() {
   // Calculate total score by summing up the points from each clue
@@ -43,18 +42,17 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 function startGame(isNewGame) {
   document.getElementById('leaderboard').classList.remove('hidden');
   ui.showMap(map, teamName, calculateTotalScore());
-  // Center the map on the team's specific starting clue
-  map.setView(teamClues[0].coords, 16);
+  // Center the map on the first clue to guide the players
+  map.setView(clues[0].coords, 16);
   initializeMarkers();
   if (isNewGame) teamsRef.child(teamId).set({ name: teamName, score: 0 });
 }
 
 function initializeMarkers() {
   if (markers.length > 0) return;
-  teamClues.forEach((clue, idx) => {
+  clues.forEach((clue, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
-    const teamColor = teamId ? teamId.split('-')[0] : '';
-    const icon = ui.createNumberedIcon(idx + 1, isSolved, false, teamColor);
+    const icon = ui.createNumberedIcon(idx + 1, isSolved);
     const marker = L.marker(clue.coords, { icon }).addTo(map);
     markers.push(marker);
 
@@ -84,11 +82,10 @@ function initializeMarkers() {
 function updateMarkerStates() {
   const currentClueIndex = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
 
-  const teamColor = teamId ? teamId.split('-')[0] : '';
   markers.forEach((marker, idx) => {
     const isSolved = clueProgress[idx] && clueProgress[idx].solved;
     const isDisabled = idx > currentClueIndex;
-    const newIcon = ui.createNumberedIcon(idx + 1, isSolved, isDisabled, teamColor);
+    const newIcon = ui.createNumberedIcon(idx + 1, isSolved, isDisabled);
     marker.setIcon(newIcon);
   });
 
@@ -130,7 +127,7 @@ function handleCorrectAnswer(idx) {
 
   // Check if all clues are solved
   const solvedCount = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
-  if (solvedCount === teamClues.length) {
+  if (solvedCount === clues.length) {
     setTimeout(ui.showCompletionBanner, 500);
   }
 }
@@ -151,7 +148,7 @@ function checkAnswer(idx, userAnswer) {
   const feedbackDiv = map.getPane('popupPane').querySelector(`#feedback-${idx}`);
   if (!feedbackDiv) return;
 
-  const correctAnswer = teamClues[idx].answer;
+  const correctAnswer = clues[idx].answer;
   const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
 
   if (isCorrect) {
@@ -194,13 +191,6 @@ function listenForTeamUpdates() {
   });
 }
 
-function disableTeamSelection(teamColor, teamName) {
-  document.getElementById(`${teamColor}-team-name`).value = teamName;
-  document.getElementById(`${teamColor}-team-name`).disabled = true;
-  document.getElementById(`join-${teamColor}-btn`).disabled = true;
-  document.getElementById(`join-${teamColor}-btn`).textContent = 'Holdet Spiller';
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   // Version check to clear old session data
   const storedVersion = sessionStorage.getItem('appVersion');
@@ -209,31 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.removeItem('teamId');
     sessionStorage.removeItem('teamName');
     sessionStorage.removeItem('clueProgress');
-    sessionStorage.removeItem('teamClues');
     sessionStorage.setItem('appVersion', APP_VERSION);
     window.location.reload(); // Reload to start fresh
   }
 
   ui.hideCompletionBanner();
-
-  // Check for existing teams to manage the start screen
-  teamsRef.once('value', (snapshot) => {
-    const teams = snapshot.val() || {};
-    const teamCount = Object.keys(teams).length;
-    let redTeamName = null;
-    let blueTeamName = null;
-
-    if (teams['red-team']) redTeamName = teams['red-team'].name;
-    if (teams['blue-team']) blueTeamName = teams['blue-team'].name;
-
-    if (redTeamName) disableTeamSelection('red', redTeamName);
-    if (blueTeamName) disableTeamSelection('blue', blueTeamName);
-
-    if (redTeamName && blueTeamName && teamId !== 'red-team' && teamId !== 'blue-team') {
-      document.getElementById('game-full-msg').classList.remove('hidden');
-    }
-  });
-
   listenForTeamUpdates(); // This will continue to update the leaderboard
   // If team name already set, skip setup
   if (teamId && teamName) {
@@ -252,37 +222,30 @@ document.getElementById('toggle-leaderboard-btn').onclick = () => {
   }, 300); // 300ms matches the CSS transition duration
 };
 
-function joinTeam(teamColor) {
-  const input = document.getElementById(`${teamColor}-team-name`);
+document.getElementById('start-btn').onclick = () => {
+  const input = document.getElementById('team-name');
   const name = input.value.trim();
   if (!name) {
     input.style.borderColor = 'red';
     input.focus();
     return;
   }
-  
-  teamId = `${teamColor}-team`;
-  teamName = name;
 
-  // Create the specific clue order for the team
-  if (teamColor === 'red') {
-    teamClues = [...clues]; // Normal order for Red Team
-  } else {
-    teamClues = [...clues].reverse(); // Reversed order for Blue Team
-  }
-  // Save this team's unique path to the session
-  sessionStorage.setItem('teamClues', JSON.stringify(teamClues));
+  // Create a new team in Firebase with a unique ID
+  const newTeamRef = teamsRef.push();
+  teamId = newTeamRef.key;
+  teamName = name;
 
   sessionStorage.setItem('teamId', teamId);
   sessionStorage.setItem('teamName', teamName);
   startGame(true); // This is a new game
-}
+};
 
-document.getElementById('join-red-btn').onclick = () => joinTeam('red');
-document.getElementById('join-blue-btn').onclick = () => joinTeam('blue');
-
-document.getElementById('red-team-name').addEventListener('keyup', e => e.key === 'Enter' && joinTeam('red'));
-document.getElementById('blue-team-name').addEventListener('keyup', e => e.key === 'Enter' && joinTeam('blue'));
+document.getElementById('team-name').addEventListener('keyup', (event) => {
+  if (event.key === 'Enter') {
+    document.getElementById('start-btn').click();
+  }
+});
 
 // Reset game logic
 document.getElementById('reset-btn').onclick = () => {
@@ -294,7 +257,6 @@ document.getElementById('reset-btn').onclick = () => {
     sessionStorage.removeItem('teamId');
     sessionStorage.removeItem('teamName');
     sessionStorage.removeItem('clueProgress');
-    sessionStorage.removeItem('teamClues');
     window.location.reload();
   }
 };
