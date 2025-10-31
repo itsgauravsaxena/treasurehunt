@@ -1,4 +1,4 @@
-import { clues } from './data.js';
+import { clues as staticClues } from './data.js';
 import * as ui from './ui.js';
 import { firebaseConfig } from './firebase-config.js';
 // Initialize Firebase
@@ -11,11 +11,12 @@ firebase.analytics(); // Initialize Firebase Analytics
 const APP_VERSION = '1.1'; // Increment this when clue data structure changes
 
 // Team setup and score logic
-let teamId = sessionStorage.getItem('teamId') || null;
-let teamName = sessionStorage.getItem('teamName') || '';
+let teamId = localStorage.getItem('teamId') || null;
+let teamName = localStorage.getItem('teamName') || '';
 // clueProgress will store attempts and score for each clue, e.g., { "0": { attempts: 1, score: 3, solved: true } }
-let clueProgress = JSON.parse(sessionStorage.getItem('clueProgress') || '{}');
+let clueProgress = JSON.parse(localStorage.getItem('clueProgress') || '{}');
 let markers = [];
+let clues = staticClues; // Default to static clues
 
 function calculateTotalScore() {
   // Calculate total score by summing up the points from each clue
@@ -34,12 +35,6 @@ const map = L.map('map', {
 
 L.control.zoom({ position: 'topright' }).addTo(map);
 
-// Add OpenStreetMap tiles
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '© OpenStreetMap contributors'
-}).addTo(map);
-
 function startGame(isNewGame) {
   document.getElementById('leaderboard').classList.remove('hidden');
   ui.showMap(map, teamName, calculateTotalScore());
@@ -49,6 +44,10 @@ function startGame(isNewGame) {
   if (isNewGame) teamsRef.child(teamId).set({ name: teamName, score: 0 });
 }
 
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
 function initializeMarkers() {
   if (markers.length > 0) return;
   clues.forEach((clue, idx) => {
@@ -124,7 +123,7 @@ function handleCorrectAnswer(idx) {
   // Update UI
   updateMarkerStates(); // This will mark the current as solved and enable the next one
   ui.updateScoreDisplay(calculateTotalScore());
-  sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
+  localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
 
   // Check if all clues are solved
   const solvedCount = Object.keys(clueProgress).filter(k => clueProgress[k].solved).length;
@@ -162,7 +161,7 @@ function checkAnswer(idx, userAnswer) {
       clueProgress[idx] = { attempts: 0 };
     }
     clueProgress[idx].attempts += 1;
-    sessionStorage.setItem('clueProgress', JSON.stringify(clueProgress));
+    localStorage.setItem('clueProgress', JSON.stringify(clueProgress));
 
     feedbackDiv.innerHTML = `Prøv igen! I kan godt! 💪`;
     feedbackDiv.className = 'popup-feedback error';
@@ -194,13 +193,13 @@ function listenForTeamUpdates() {
 
 document.addEventListener('DOMContentLoaded', () => {
   // Version check to clear old session data
-  const storedVersion = sessionStorage.getItem('appVersion');
+  const storedVersion = localStorage.getItem('appVersion');
   if (storedVersion !== APP_VERSION) {
     console.log('App version changed. Clearing old session data.');
-    sessionStorage.removeItem('teamId');
-    sessionStorage.removeItem('teamName');
-    sessionStorage.removeItem('clueProgress');
-    sessionStorage.setItem('appVersion', APP_VERSION);
+    localStorage.removeItem('teamId');
+    localStorage.removeItem('teamName');
+    localStorage.removeItem('clueProgress');
+    localStorage.setItem('appVersion', APP_VERSION);
     window.location.reload(); // Reload to start fresh
   }
 
@@ -208,8 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
   listenForTeamUpdates(); // This will continue to update the leaderboard
   // If team name already set, skip setup
   if (teamId && teamName) {
-    startGame(false); // It's not a new game, just restoring state
-    ui.setTeamNameInput(teamName); // Pre-fill the input for clarity
+    // A game is in progress, offer to continue
+    const teamNameInput = document.getElementById('team-name');
+    const startButton = document.getElementById('start-btn');
+    teamNameInput.value = teamName;
+    startButton.textContent = 'Fortsæt Spil!'; // Change button text to "Continue Game!"
   }
 });
 
@@ -223,7 +225,7 @@ document.getElementById('toggle-leaderboard-btn').onclick = () => {
   }, 300); // 300ms matches the CSS transition duration
 };
 
-document.getElementById('start-btn').onclick = () => {
+document.getElementById('start-btn').onclick = async () => {
   const input = document.getElementById('team-name');
   const name = input.value.trim();
   if (!name) {
@@ -232,13 +234,52 @@ document.getElementById('start-btn').onclick = () => {
     return;
   }
 
-  // Create a new team in Firebase with a unique ID
+  // Check if the user is continuing with their saved game
+  const savedClues = JSON.parse(localStorage.getItem('clues'));
+  if (localStorage.getItem('teamName') === name && savedClues) {
+    clues = savedClues; // Load saved random clues
+    startGame(false);
+    return;
+  }
+
+  // Show loading indicator
+  const startButton = document.getElementById('start-btn');
+  const loadingMsg = document.getElementById('loading-msg');
+  startButton.disabled = true;
+  loadingMsg.classList.remove('hidden');
+
+  // NOTE: API fetching is disabled to use the custom Danish questions.
+  // try {
+  //   // Fetch new random questions and merge them with static locations
+  //   const newClues = await fetchRandomClues();
+  //   clues = newClues;
+  //   localStorage.setItem('clues', JSON.stringify(clues)); // Save the new set of clues
+  // } catch (error) {
+  //   console.error("Could not fetch new clues, using fallback.", error);
+  //   alert("Kunne ikke hente nye spørgsmål. Bruger standard spørgsmål.");
+  //   clues = staticClues; // Fallback to static clues on error
+  // } finally {
+  //   // Hide loading indicator
+  //   startButton.disabled = false;
+  //   loadingMsg.classList.add('hidden');
+  // }
+
+  // Otherwise, start a new game
   const newTeamRef = teamsRef.push();
   teamId = newTeamRef.key;
   teamName = name;
 
-  sessionStorage.setItem('teamId', teamId);
-  sessionStorage.setItem('teamName', teamName);
+  localStorage.setItem('teamId', teamId);
+  localStorage.setItem('teamName', teamName);
+  // Clear progress for the new game
+  localStorage.removeItem('clueProgress');
+  clueProgress = {};
+
+  // Use the static clues and start the game immediately
+  clues = staticClues;
+  startButton.disabled = false;
+  loadingMsg.classList.add('hidden');
+
   startGame(true); // This is a new game
 };
 
@@ -248,19 +289,68 @@ document.getElementById('team-name').addEventListener('keyup', (event) => {
   }
 });
 
+document.getElementById('save-exit-btn').onclick = () => {
+  if (confirm('Vil du gemme dit spil og afslutte? Du kan fortsætte, næste gang du åbner spillet.')) {
+    // Hide game elements and show a clean start screen
+    document.getElementById('team-header').classList.add('hidden');
+    document.getElementById('map').classList.add('hidden');
+    document.getElementById('leaderboard').classList.add('hidden');
+    document.getElementById('team-setup').classList.remove('hidden');
+
+    // Reset the input field for a clean look
+    const teamNameInput = document.getElementById('team-name');
+    teamNameInput.value = '';
+    document.getElementById('start-btn').textContent = 'Start!';
+  }
+};
+
 // Reset game logic
 document.getElementById('reset-btn').onclick = () => {
   if (confirm('Er I sikre på, I vil starte forfra? Alle jeres point og jeres holdnavn forsvinder.')) {
     if (teamId) {
       teamsRef.child(teamId).remove();
     }
-    ui.hideCompletionBanner();
-    sessionStorage.removeItem('teamId');
-    sessionStorage.removeItem('teamName');
-    sessionStorage.removeItem('clueProgress');
+    localStorage.removeItem('teamId');
+    localStorage.removeItem('teamName');
+    localStorage.removeItem('clueProgress');
+    localStorage.removeItem('clues');
+    // Also clear the input field and reset the button
+    const teamNameInput = document.getElementById('team-name');
+    teamNameInput.value = '';
     window.location.reload();
   }
 };
+
+async function fetchRandomClues() {
+  const response = await fetch(`https://opentdb.com/api.php?amount=${staticClues.length}&type=multiple&encode=base64`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch trivia questions');
+  }
+  const data = await response.json();
+
+  return staticClues.map((staticClue, index) => {
+    const triviaQuestion = data.results[index];
+    if (!triviaQuestion) return staticClue; // Fallback for safety
+
+    const questionText = atob(triviaQuestion.question);
+    const correctAnswer = atob(triviaQuestion.correct_answer);
+    const incorrectAnswers = triviaQuestion.incorrect_answers.map(a => atob(a));
+
+    const options = [...incorrectAnswers, correctAnswer];
+    // Shuffle options so the correct answer isn't always last
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    return {
+      ...staticClue, // Keep coords and hint
+      text: `🤔 ${questionText}`,
+      options: options,
+      answer: correctAnswer,
+    };
+  });
+}
 
 // --- Answer Handlers (exposed to global scope for inline HTML onclick) ---
 

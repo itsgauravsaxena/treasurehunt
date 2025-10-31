@@ -1,202 +1,222 @@
-export const clues = [
+/**
+ * Shuffles an array in place using the Fisher-Yates algorithm.
+ * @param {Array} array The array to shuffle.
+ */
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+const staticClues = [
   {
     coords: [55.68696830796677, 12.441323778391876], // 1. Købmand the most popular one
-    text: "🎡 Hvad hedder den berømte forlystelsespark midt i København?",
-    options: ["Tivoli", "Bakken", "Legoland"],
-    answer: "Tivoli",
+    text: "🎮 Hvad hedder det spil, hvor man bygger med firkantede klodser og kæmper mod Creepers?",
+    options: ["Minecraft", "Roblox", "Fortnite"],
+    answer: "Minecraft",
     type: "options",
     hint: "Købmand den mest populære"
   },
   {
     coords: [55.68695494871787, 12.439874297646213], // 2. Ejbyvej road sign
-    text: "⚽ Hvad er kælenavnet for det danske herrelandshold i fodbold?",
-    options: ["De Rød-Hvide", "De Blå-Gule", "Løverne"],
-    answer: "De Rød-Hvide",
+    text: "🦁 Hvad er det hurtigste landdyr i verden?",
+    options: ["Gepard", "Løve", "Hest"],
+    answer: "Gepard",
     type: "options",
     hint: "Ejbyvej vejskilt"
   },
   {
     coords: [55.687032690311014, 12.438615004732753], // 3. Behind the pole ejbyvænge
-    text: "🎮 Hvilket af disse spil er IKKE lavet i Danmark?",
-    options: ["Fortnite", "Subway Surfers", "Hitman"],
-    answer: "Fortnite",
+    text: "🌍 Hvilken planet er kendt som 'den røde planet'?",
+    options: ["Mars", "Jupiter", "Venus"],
+    answer: "Mars",
     type: "options",
     hint: "Bag pælen ved Ejbyvænge"
   },
   {
     coords: [55.686960424146285, 12.437665374624837], // 4. Behind arrow sign on road
-    text: "⚔️ Hvad kaldte man de danske krigere i gamle dage, som sejlede i langskibe?",
-    options: ["Vikinger", "Riddere", "Samuraier"],
-    answer: "Vikinger",
+    text: "🇩🇰 Hvad hedder Danmarks hovedstad?",
+    options: ["København", "Aarhus", "Odense"],
+    answer: "København",
     type: "options",
     hint: "Bag pileskiltet på vejen"
   },
   {
     coords: [55.686970142729656, 12.43602611815933], // 5. 2 Little TDC boxes
-    text: "🐻‍❄️ Hvilken stor hvid bjørn lever i Grønland?",
-    options: ["Isbjørn", "Panda", "Grizzlybjørn"],
-    answer: "Isbjørn",
+    text: "🦸 Hvilken superhelt er kendt for at svinge sig mellem bygninger i New York?",
+    options: ["Spider-Man", "Superman", "Batman"],
+    answer: "Spider-Man",
     type: "options",
     hint: "2 små TDC-bokse"
   },
   {
     coords: [55.6869651359237, 12.435446941494142], // 6. Another TDC box
-    text: "🧜‍♀️ Hvem skrev eventyret om 'Den Lille Havfrue'?",
-    options: ["H.C. Andersen", "Brødrene Grimm", "Astrid Lindgren"],
-    answer: "H.C. Andersen",
+    text: "🌊 Hvad er det største hav i verden?",
+    options: ["Stillehavet", "Atlanterhavet", "Det Indiske Ocean"],
+    answer: "Stillehavet",
     type: "options",
     hint: "Endnu en TDC-boks"
   },
   {
     coords: [55.6875977,12.4354654], // 7. Old bunker building
-    text: "📍 Hvad er hovedstaden i Danmark?",
-    options: ["København", "Oslo", "Stockholm"],
-    answer: "København",
+    text: "📖 Hvem har skrevet bøgerne om Harry Potter?",
+    options: ["J.K. Rowling", "H.C. Andersen", "Astrid Lindgren"],
+    answer: "J.K. Rowling",
     type: "options",
     hint: "Gammel bunkebygning"
   },
   {
     coords: [55.6879552,12.4349564], // 8. Pillar before bridge
-    text: "👑 Hvad hedder Danmarks konge?",
-    options: ["Kong Frederik", "Kong Charles", "Kong Harald"],
-    answer: "Kong Frederik",
+    text: "📱 Hvilket firma laver iPhone?",
+    options: ["Apple", "Samsung", "Google"],
+    answer: "Apple",
     type: "options",
     hint: "Søjle før broen"
   },
   {
     coords: [55.68807811514166, 12.434463706161942], // 9. End of the bridge
-    text: "🎤 Hvad hedder den store danske sangkonkurrence?",
-    options: ["Melodi Grand Prix", "X Factor", "Danmark har Talent"],
-    answer: "Melodi Grand Prix",
+    text: "🦕 Hvilken slags dinosaur var kendt for sin lange hals?",
+    options: ["Brachiosaurus", "T-Rex", "Triceratops"],
+    answer: "Brachiosaurus",
     type: "options",
     hint: "For enden af broen"
   },
   {
     coords: [55.68824114692889, 12.433749126035053], // 10. T junction further after bridge
-    text: "🌭 Hvilken farve har den mest kendte danske pølse?",
-    options: ["Rød", "Grøn", "Blå"],
-    answer: "Rød",
+    text: "⚽ Hvor mange spillere er der på et fodboldhold på banen ad gangen?",
+    options: ["11", "7", "9"],
+    answer: "11",
     type: "options",
     hint: "T-kryds længere efter broen"
   },
   {
     coords: [55.6878498,12.4354218], // 11.On way back from bridge road there is a no car roadsign
-    text: "🌉 Hvilken bro forbinder Danmark og Sverige?",
-    options: ["Øresundsbroen", "Storebæltsbroen", "Lillebæltsbroen"],
-    answer: "Øresundsbroen",
+    text: "🍕 Hvilket land er pizza oprindeligt fra?",
+    options: ["Italien", "USA", "Frankrig"],
+    answer: "Italien",
     type: "options",
     hint: "På vej tilbage fra brovejen er der et 'kørsel forbudt' skilt"
   },
   {
     coords: [55.6880306,12.4357766], // 12. Entrance to military area on metal door
-    text: "🥐 Hvad hedder et berømt stykke dansk bagværk?",
-    options: ["Wienerbrød", "Croissant", "Muffin"],
-    answer: "Wienerbrød",
+    text: "💧 Hvad består vand af?",
+    options: ["H2O", "CO2", "O2"],
+    answer: "H2O",
     type: "options",
     hint: "Indgang til militærområde på metaldør"
   },
   {
     coords: [55.68866504076029, 12.436271208776882], // 13. Map of bunkers and fortification
-    text: "🧱 Hvilke verdensberømte byggeklodser blev opfundet i Danmark?",
-    options: ["LEGO", "Playmobil", "Mega Bloks"],
-    answer: "LEGO",
+    text: "☀️ Hvad er den største stjerne i vores solsystem?",
+    options: ["Solen", "Sirius", "Polaris"],
+    answer: "Solen",
     type: "options",
     hint: "Kort over bunkers og befæstning"
   },
   {
     coords: [55.68836367049055, 12.436260537384154], // 14. Where there is a tank placed
-    text: "👋 Hvordan siger man 'hello' på dansk?",
-    options: ["Hej", "Hola", "Hello"],
-    answer: "Hej",
+    text: "🎨 Hvilken berømt maler malede Mona Lisa?",
+    options: ["Leonardo da Vinci", "Picasso", "Van Gogh"],
+    answer: "Leonardo da Vinci",
     type: "options",
     hint: "Hvor der er en tank placeret"
   },
   {
     coords: [55.68896476743011, 12.437271880241783], // 15. On one of the metal crossbars
-    text: "🏰 Hvor kan man se de originale LEGO klodser?",
-    options: ["Legoland", "Tivoli", "Nationalmuseet"],
-    answer: "Legoland",
+    text: "⚡ Hvad hedder guden for torden i nordisk mytologi?",
+    options: ["Thor", "Odin", "Loke"],
+    answer: "Thor",
     type: "options",
     hint: "På en af metaltværbjælkerne"
   },
   {
     coords: [55.68946350583189, 12.436652953241998], // 16. Near ejbybunkers there should be a clue
-    text: "⚽ Hvilken af disse er en berømt dansk fodboldspiller?",
-    options: ["Christian Eriksen", "Lionel Messi", "Zlatan"],
-    answer: "Christian Eriksen",
+    text: "🍌 Hvilket dyr elsker at spise bananer?",
+    options: ["Abe", "Løve", "Elefant"],
+    answer: "Abe",
     type: "options",
     hint: "Nær Ejbybunkers skulle der være et spor"
   },
   {
     coords: [55.686984776921854, 12.434759989174783], // 17. Hofor water station 
-    text: "🇩🇰 Hvilke farver har det danske flag?",
-    options: ["Rød og hvid", "Blå og gul", "Grøn og hvid"],
-    answer: "Rød og hvid",
+    text: "🗼 Hvilken by er kendt for Eiffeltårnet?",
+    options: ["Paris", "London", "Rom"],
+    answer: "Paris",
     type: "options",
     hint: "Hofor vandstation"
   },
   {
     coords: [55.68694652751955, 12.43714555066889], // 18. Another roadsign showing direction
-    text: "🚽 Hvad synger hovederne, der kommer ud af toiletterne i 'Skibidi Toilet'?",
-    options: ["Brrr Skibidi Dop Dop", "Baby Shark", "Gangnam Style"],
-    answer: "Brrr Skibidi Dop Dop",
+    text: "🟡 Hvad hedder de små, gule hjælpere i filmen 'Grusomme Mig'?",
+    options: ["Minions", "Smølfer", "Trolde"],
+    answer: "Minions",
     type: "options",
     hint: "Endnu et vejskilt, der viser retning"
   },
   {
     coords: [55.68712902847947, 12.437522998133703], // 19. Speed limit sign 30
-    text: "🟩 Hvad hedder den grønne, eksploderende fjende i Minecraft?",
-    options: ["Creeper", "Zombie", "Skeleton"],
-    answer: "Creeper",
+    text: "🏴‍☠️ Hvad kalder man en sørøvers flag?",
+    options: ["Jolly Roger", "Dannebrog", "Union Jack"],
+    answer: "Jolly Roger",
     type: "options",
     hint: "Fartgrænse 30-skilt"
   },
   {
     coords: [55.687411089962794, 12.437368926962439], // 20. Nørregardsvej road sign
-    text: "😎 Hvad betyder det, hvis nogen siger, du har 'rizz'?",
-    options: ["Du er god til at flirte", "Du er god til sport", "Du er klog"],
-    answer: "Du er god til at flirte",
+    text: "😴 Hvad kalder man det, når en bjørn sover hele vinteren?",
+    options: ["Gå i hi", "Dvale", "Snorke"],
+    answer: "Gå i hi",
     type: "options",
     hint: "Nørregårdsvej vejskilt"
   },
   {
     coords: [55.687804768539785, 12.437697522257107], // 21. Metal frame at entrance of Nyskiftevej
-    text: "🦁 Hvilken bys fodboldhold er FCK (F.C. København)?",
-    options: ["København", "Aarhus", "Odense"],
-    answer: "København",
+    text: "👑 Hvad hedder prinsessen i filmen 'Frost'?",
+    options: ["Elsa", "Anna", "Ariel"],
+    answer: "Elsa",
     type: "options",
     hint: "Metalramme ved indgangen til Nyskiftevej"
   },
   {
     coords: [55.6877777791366, 12.438024632995544], // 22. Street lamp infront of house number 56
-    text: "🎅 Hvad spiser nissen til jul?",
-    options: ["Risengrød", "Pizza", "Gulerødder"],
-    answer: "Risengrød",
+    text: "🚗 Hvilket bilmærke er kendt for sin 'folkevogn'?",
+    options: ["Volkswagen", "Ford", "Toyota"],
+    answer: "Volkswagen",
     type: "options",
     hint: "Gadelampe foran husnummer 56"
   },
   {
     coords: [55.68780802027629, 12.439163026610396], // 23. TDC box near house number 42
-    text: "🏃‍♂️ Hvad hedder hovedpersonen i det danske spil 'Subway Surfers'?",
-    options: ["Jake", "Hugo", "Mario"],
-    answer: "Jake",
+    text: "👃 Hvilken sans bruger en hund mest?",
+    options: ["Lugtesansen", "Synet", "Hørelsen"],
+    answer: "Lugtesansen",
     type: "options",
     hint: "TDC-boks nær husnummer 42"
   },
   {
     coords: [55.68782459987383, 12.43997944732714], // 24. Where is Oscar's house
-    text: "🚪 Hvilket Roblox-spil er kendt for sine mange døre og uhyggelige monstre?",
-    options: ["Doors", "Brookhaven", "Adopt Me!"],
-    answer: "Doors",
+    text: "🌙 Hvor mange måner har Jorden?",
+    options: ["En", "To", "Ingen"],
+    answer: "En",
     type: "options",
     hint: "Hvor er Oscars hus"
   },
   {
     coords: [55.68777105484344, 12.440442195797196], // 25. Mahims house
-    text: "🏡 Hvad kan man IKKE gøre i det populære Roblox-spil 'Brookhaven'?",
-    options: ["Kæmpe mod drager", "Køre i bil", "Eje et hus"],
-    answer: "Kæmpe mod drager",
+    text: "🧱 Hvad er LEGO klodser lavet af?",
+    options: ["Plastik", "Træ", "Metal"],
+    answer: "Plastik",
     type: "options",
     hint: "Mahims hus"
   }
 ];
+
+// Shuffle the options for each clue to randomize the answer position
+staticClues.forEach(clue => {
+  if (clue.options) {
+    shuffleArray(clue.options);
+  }
+});
+
+export const clues = staticClues;

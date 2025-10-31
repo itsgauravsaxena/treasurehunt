@@ -80,6 +80,10 @@ header {
   margin-bottom: 12px;
 }
 
+#loading-msg {
+  margin-top: 10px;
+}
+
 .main-container {
   display: flex;
   flex: 1;
@@ -235,27 +239,12 @@ header {
   display: none !important;
 }
 
-/* Class to visually hide the detailed clue text in popups */
+/* Class for the detailed clue text in popups */
 .hidden-clue-text {
-  display: block; /* Hidden by default due to small height and overflow */
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
+  display: block;
   margin-top: 8px;
-  opacity: 0.7;
-}
-
-.btn, .popup-btn, .popup-submit-btn {
-  background: url('https://example.com/minecraft-button-texture.png') no-repeat center center;
-  background-size: cover;
-  border: 2px solid var(--gray);
-  color: var(--white);
-  text-shadow: var(--text-shadow);
-}
-
-.btn:hover, .popup-btn:hover, .popup-submit-btn:hover {
-  background: url('https://example.com/minecraft-button-hover-texture.png') no-repeat center center;
-  background-size: cover;
+  opacity: 1; /* Make it fully visible */
+  line-height: 1.4; /* Improve readability */
 }
 
 .btn, .popup-btn, .popup-submit-btn {
@@ -301,7 +290,7 @@ header {
   font-size: 1em;
 }
 
-#reset-btn, #clear-leaderboard-btn {
+#reset-btn, #clear-leaderboard-btn, #save-exit-btn {
   padding: 8px 10px;
   font-size: 1.2em; /* Make icons slightly larger */
 }
@@ -332,19 +321,6 @@ header {
   background-color: #198754; /* Bootstrap Green */
   /* You could also add a checkmark */
   /* content: '✓'; */
-}
-
-/* When dev mode is on, show the clue text */
-body.dev-mode .hidden-clue-text {
-  max-height: 100px; /* Animate it open */
-}
-
-.dev-only {
-  display: none;
-}
-
-.dev-mode .dev-only {
-  display: inline-block;
 }
 
 .numbered-marker.disabled {
