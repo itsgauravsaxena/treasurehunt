@@ -5,6 +5,7 @@ import { firebaseConfig } from './firebase-config.js';
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const teamsRef = database.ref('teams');
+firebase.analytics(); // Initialize Firebase Analytics
 
 // --- App State ---
 const APP_VERSION = '1.1'; // Increment this when clue data structure changes
