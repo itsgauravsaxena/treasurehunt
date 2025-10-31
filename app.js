@@ -109,6 +109,10 @@ function startGeolocation() {
     return;
   }
 
+  if (!window.isSecureContext) {
+    alert("Geolokation kræver en sikker (https) forbindelse. Denne side ser ikke ud til at være sikker.");
+  }
+
   navigator.geolocation.watchPosition(position => {
     userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
     if (!userMarker) {
@@ -116,8 +120,20 @@ function startGeolocation() {
     } else {
       userMarker.setLatLng(userLatLng);
     }
-  }, () => {
-    alert("Kunne ikke få din placering. Tillad venligst adgang til din placering for at spille.");
+  }, (error) => {
+    let errorMessage = "Kunne ikke få din placering. ";
+    switch(error.code) {
+      case error.PERMISSION_DENIED:
+        errorMessage += "Du har blokeret for adgang til din placering. Gå venligst til dine browserindstillinger for at tillade det.";
+        break;
+      case error.POSITION_UNAVAILABLE:
+        errorMessage += "Placeringsinformation er ikke tilgængelig. Prøv at gå udenfor for et bedre signal.";
+        break;
+      case error.TIMEOUT:
+        errorMessage += "Anmodningen om din placering timed out. Prøv igen.";
+        break;
+    }
+    alert(errorMessage);
   }, { enableHighAccuracy: true });
 }
 
